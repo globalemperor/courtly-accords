@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import Cases from "./pages/Cases";
 import CaseDetails from "./pages/CaseDetails";
 import NotFound from "./pages/NotFound";
+import ResourcePage from "./pages/ResourcePage";
+import LearnMore from "./pages/LearnMore";
 import MainLayout from "./components/layout/MainLayout";
 import { AuthProvider } from "./context/AuthContext";
 import { DataProvider } from "./context/DataContext";
@@ -100,17 +102,25 @@ const AppContent = () => {
                 <Route path="new-cases" element={<NewCases />} />
               </Route>
               
-              {/* Help pages */}
-              <Route path="/help" element={<NotFound />} />
-              <Route path="/documentation" element={<NotFound />} />
-              <Route path="/guides" element={<NotFound />} />
-              <Route path="/faq" element={<NotFound />} />
+              {/* Learn More Page */}
+              <Route path="/learn-more" element={<LearnMore />} />
               
-              {/* Legal pages */}
-              <Route path="/terms" element={<NotFound />} />
-              <Route path="/privacy" element={<NotFound />} />
-              <Route path="/cookies" element={<NotFound />} />
-              <Route path="/gdpr" element={<NotFound />} />
+              {/* Resource Pages */}
+              <Route path="/resources/:resourceType" element={<ResourcePage />} />
+              
+              {/* Help pages - redirect to resource pages */}
+              <Route path="/help" element={<Navigate to="/resources/help" replace />} />
+              <Route path="/documentation" element={<Navigate to="/resources/documentation" replace />} />
+              <Route path="/guides" element={<Navigate to="/resources/guides" replace />} />
+              <Route path="/faq" element={<Navigate to="/resources/faq" replace />} />
+              <Route path="/tutorials" element={<Navigate to="/resources/tutorials" replace />} />
+              <Route path="/contact" element={<Navigate to="/resources/contact" replace />} />
+              
+              {/* Legal pages - redirect to resource pages */}
+              <Route path="/terms" element={<Navigate to="/resources/terms" replace />} />
+              <Route path="/privacy" element={<Navigate to="/resources/privacy" replace />} />
+              <Route path="/cookies" element={<Navigate to="/resources/cookies" replace />} />
+              <Route path="/gdpr" element={<Navigate to="/resources/gdpr" replace />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>
