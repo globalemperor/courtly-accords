@@ -1,4 +1,3 @@
-
 // Original user types
 export type UserRole = 'client' | 'lawyer' | 'clerk' | 'judge';
 
@@ -21,6 +20,14 @@ export interface User {
   casesHandled?: number;
   casesWon?: number;
   caseTypes?: string[];
+  // Add missing properties for different user roles
+  barId?: string; // For lawyers
+  yearsOfExperience?: string; // For lawyers
+  chamberNumber?: string; // For judges
+  courtDistrict?: string; // For judges
+  yearsOnBench?: string; // For judges
+  courtId?: string; // For clerks
+  department?: string; // For clerks
 }
 
 export type CaseStatus = 
@@ -36,7 +43,7 @@ export interface Case {
   id: string;
   title: string;
   description: string;
-  caseNumber: string;
+  caseNumber?: string; // Make caseNumber optional to accommodate empty_cases.json
   status: CaseStatus;
   clientId: string;
   lawyerId?: string;
@@ -52,7 +59,23 @@ export interface Case {
     idType: string;
     idNumber: string;
   };
-  judgement?: Judgement; // Add judgement property to the Case interface
+  judgement?: Judgement;
+  // Add these fields to match empty_cases.json structure
+  type?: string;
+  judgeId?: string;
+  filingDate?: string;
+  documents?: Array<{
+    id: string;
+    name: string;
+    url: string;
+    uploadedBy: string;
+    uploadedAt: string;
+  }>;
+  parties?: Array<{
+    id: string;
+    name: string;
+    role: string;
+  }>;
 }
 
 export interface Message {

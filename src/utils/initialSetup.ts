@@ -19,8 +19,8 @@ export const setupTestEnvironment = () => {
   localStorage.setItem('courtwise_users_judges', JSON.stringify(judgeUsers));
   localStorage.setItem('courtwise_users_clerks', JSON.stringify(clerkUsers));
   
-  // Store cases
-  localStorage.setItem('courtwise_cases', JSON.stringify(emptyCases));
+  // Store cases - use as Case[] type to ensure TypeScript compatibility
+  localStorage.setItem('courtwise_cases', JSON.stringify(emptyCases as unknown as Case[]));
 };
 
 export default setupTestEnvironment;

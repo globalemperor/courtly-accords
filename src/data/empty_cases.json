@@ -4,6 +4,7 @@
     "id": "case_001",
     "title": "Smith vs Jones",
     "description": "Property dispute between neighbors",
+    "caseNumber": "CV-2023-001",
     "type": "civil",
     "status": "pending",
     "clientId": "client1",
