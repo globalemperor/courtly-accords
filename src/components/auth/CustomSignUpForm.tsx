@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { LawyerSignUpFields } from "./LawyerSignUpFields";
+import LawyerSignUpFields from "./LawyerSignUpFields";
 import { ClientSignUpFields } from "./ClientSignUpFields";
 import { UserRole } from "@/types";
 import { RoleIcon } from "../common/RoleIcon";
@@ -61,7 +61,7 @@ export const CustomSignUpForm = ({ defaultRole }: SignUpFormProps) => {
       phone: "",
       address: "",
       governmentId: {
-        type: "",
+        type: "", 
         number: ""
       }
     }
@@ -76,7 +76,7 @@ export const CustomSignUpForm = ({ defaultRole }: SignUpFormProps) => {
         role: defaultRole,
         phone: data.phone,
         address: data.address,
-        governmentId: data.governmentId,
+        governmentId: data.governmentId || { type: "", number: "" },
         // Role specific fields
         specialization: data.specialization,
         barId: data.barId,
