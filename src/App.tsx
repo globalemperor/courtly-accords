@@ -45,15 +45,15 @@ const LawyerRoute = ({ children }: { children: React.ReactNode }) => {
 
 const queryClient = new QueryClient();
 
-// Setup Firebase and local storage on app load
-useEffect(() => {
-  const setup = async () => {
-    await setupTestEnvironment();
-  };
-  setup();
-}, []);
-
 const AppContent = () => {
+  // Setup Firebase and local storage on app load - moved inside the component
+  useEffect(() => {
+    const setup = async () => {
+      await setupTestEnvironment();
+    };
+    setup();
+  }, []);
+
   return (
     <BrowserRouter>
       <AuthProvider>
