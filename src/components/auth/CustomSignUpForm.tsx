@@ -72,14 +72,21 @@ export const CustomSignUpForm = ({ defaultRole }: SignUpFormProps) => {
     
     try {
       // Ensure governmentId exists and has the required properties
-      const governmentIdData = data.governmentId || { type: "National ID", number: "" };
+      // Use non-null assertion since we've set default values in the form
+      const governmentIdData = data.governmentId || { 
+        type: "National ID", 
+        number: "" 
+      };
       
       const { error } = await signup(data.email, data.password, {
         name: data.name,
         role: defaultRole,
         phone: data.phone,
         address: data.address,
-        governmentId: governmentIdData,
+        governmentId: {
+          type: governmentIdData.type,
+          number: governmentIdData.number
+        },
         // Role specific fields
         specialization: data.specialization,
         barId: data.barId,
