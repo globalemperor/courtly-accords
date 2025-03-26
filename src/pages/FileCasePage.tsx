@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
@@ -13,7 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { firebaseService } from "@/services/FirebaseService";
 
 // Government ID types
 const GOV_ID_TYPES = [
@@ -32,7 +32,6 @@ const formSchema = z.object({
   defendant: z.object({
     name: z.string().min(2, { message: "Defendant name is required" }),
     contactNumber: z.string().min(10, { message: "Valid contact number is required" }),
-    address: z.string().min(5, { message: "Defendant address is required" }),
     govIdType: z.string().min(1, { message: "Please select an ID type" }),
     govIdNumber: z.string().min(4, { message: "Government ID number is required" })
   })
@@ -42,10 +41,12 @@ type FormValues = z.infer<typeof formSchema>;
 
 const FileCasePage = () => {
   const { user } = useAuth();
-  const { createCase } = useData();
+  const { createCase, getUsersByRole } = useData();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get all available lawyers
+  const lawyers = getUsersByRole("lawyer");
 
   // Initialize the form with react-hook-form and zod validation
   const form = useForm<FormValues>({
@@ -57,7 +58,6 @@ const FileCasePage = () => {
       defendant: {
         name: "",
         contactNumber: "",
-        address: "",
         govIdType: "",
         govIdNumber: ""
       }
@@ -74,53 +74,23 @@ const FileCasePage = () => {
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
       // Format defendant info to include in the case
       const defendantInfo = {
         name: data.defendant.name,
         contactNumber: data.defendant.contactNumber,
-        address: data.defendant.address,
         idType: data.defendant.govIdType,
         idNumber: data.defendant.govIdNumber
       };
 
       // Create the case
-      // First try Firebase service
-      try {
-        const newCase = await firebaseService.createCase({
-          title: data.title,
-          description: data.description,
-          caseNumber: `CV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-          status: "pending",
-          clientId: user.id,
-          filedDate: new Date().toISOString(),
-          type: data.caseType,
-          defendantInfo
-        });
-
-        toast({
-          title: "Case filed successfully",
-          description: `Your case has been filed with case number ${newCase.caseNumber}`,
-        });
-
-        navigate("/cases");
-        return;
-      } catch (firebaseError) {
-        console.error("Firebase error, falling back to local storage:", firebaseError);
-      }
-
-      // Fallback to local storage
       const newCase = await createCase({
         title: data.title,
-        description: `${data.description}\n\nDefendant Information:\nName: ${defendantInfo.name}\nContact: ${defendantInfo.contactNumber}\nAddress: ${defendantInfo.address}\nID Type: ${defendantInfo.idType}\nID Number: ${defendantInfo.idNumber}`,
+        description: `${data.description}\n\nDefendant Information:\nName: ${defendantInfo.name}\nContact: ${defendantInfo.contactNumber}\nID Type: ${defendantInfo.idType}\nID Number: ${defendantInfo.idNumber}`,
         caseNumber: `CV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
         status: "pending",
         clientId: user.id,
         filedDate: new Date().toISOString(),
-        type: data.caseType,
-        defendantInfo
       });
 
       toast({
@@ -136,8 +106,6 @@ const FileCasePage = () => {
         description: "There was a problem filing your case. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -256,20 +224,6 @@ const FileCasePage = () => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="defendant.address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Defendant's address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -313,9 +267,7 @@ const FileCasePage = () => {
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Filing Case..." : "File Case"}
-              </Button>
+              <Button type="submit">File Case</Button>
             </CardFooter>
           </Card>
         </form>

@@ -56,7 +56,6 @@ export interface Case {
   defendantInfo?: {
     name: string;
     contactNumber: string;
-    address?: string;
     idType: string;
     idNumber: string;
   };
