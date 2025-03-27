@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,8 +16,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CountryCodeSelector } from "./CountryCodeSelector";
 
-// Base schema for common fields
-const baseSchema = z.object({
+// Base schema for common fields - defined directly as a schema object
+const baseSchemaFields = {
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -27,32 +26,45 @@ const baseSchema = z.object({
   phoneNumber: z.string().min(5, "Phone number is required"),
   idType: z.string().min(1, "ID type is required"),
   idNumber: z.string().min(1, "ID number is required"),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"]
-});
+};
+
+// Base schema with the password validation
+const baseSchema = z.object(baseSchemaFields)
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"]
+  });
 
 // Role-specific schemas with additional fields
 const clientSchema = baseSchema;
 
 const lawyerSchema = z.object({
-  ...baseSchema.shape,
+  ...baseSchemaFields,
   barId: z.string().min(3, "Bar ID is required"),
   yearsOfExperience: z.string().min(1, "Years of experience is required"),
   specialization: z.string().optional(),
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
 });
 
 const clerkSchema = z.object({
-  ...baseSchema.shape,
+  ...baseSchemaFields,
   courtId: z.string().min(3, "Court ID is required"),
   department: z.string().optional(),
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
 });
 
 const judgeSchema = z.object({
-  ...baseSchema.shape,
+  ...baseSchemaFields,
   chamberNumber: z.string().min(1, "Chamber number is required"),
   courtDistrict: z.string().min(2, "Court district is required"),
   yearsOnBench: z.string().optional(),
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
 });
 
 const getSchemaForRole = (role: UserRole) => {
