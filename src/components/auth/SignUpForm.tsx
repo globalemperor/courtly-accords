@@ -9,7 +9,8 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
-import { Gavel, User, UserCog, Scale, PenLine } from "lucide-react";
+import { Gavel, User, Scale, PenLine } from "lucide-react";
+import { UserCog } from "lucide-react"; // Import UserCog from lucide-react
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -34,18 +35,21 @@ const baseSchema = z.object({
 // Role-specific schemas with additional fields
 const clientSchema = baseSchema;
 
-const lawyerSchema = baseSchema.extend({
+const lawyerSchema = z.object({
+  ...baseSchema.shape,
   barId: z.string().min(3, "Bar ID is required"),
   yearsOfExperience: z.string().min(1, "Years of experience is required"),
   specialization: z.string().optional(),
 });
 
-const clerkSchema = baseSchema.extend({
+const clerkSchema = z.object({
+  ...baseSchema.shape,
   courtId: z.string().min(3, "Court ID is required"),
   department: z.string().optional(),
 });
 
-const judgeSchema = baseSchema.extend({
+const judgeSchema = z.object({
+  ...baseSchema.shape,
   chamberNumber: z.string().min(1, "Chamber number is required"),
   courtDistrict: z.string().min(2, "Court district is required"),
   yearsOnBench: z.string().optional(),

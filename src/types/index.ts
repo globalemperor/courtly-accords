@@ -1,3 +1,4 @@
+
 // Original user types
 export type UserRole = 'client' | 'lawyer' | 'clerk' | 'judge';
 
@@ -14,6 +15,8 @@ export interface User {
     type: string;
     number: string;
   };
+  idType?: string; // Added for government ID type
+  idNumber?: string; // Added for government ID number
   password?: string; // Add password as an optional property
   // New lawyer-specific fields
   licenseYear?: string;
