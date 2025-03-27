@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,6 +19,9 @@ const clientSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string(),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  idType: z.string().min(1, "ID type is required"),
+  idNumber: z.string().min(1, "ID number is required"),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"]
@@ -100,6 +102,9 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
       email: "",
       password: "",
       confirmPassword: "",
+      phone: "",
+      idType: "",
+      idNumber: "",
       barId: "",
       yearsOfExperience: "",
       specialization: "",
@@ -124,7 +129,11 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
       const userData = {
         name,
         role,
-        // Add other profile fields based on role
+        ...(role === 'client' && { 
+          phone: data.phone,
+          idType: data.idType,
+          idNumber: data.idNumber
+        }),
         ...(role === 'lawyer' && { 
           barId: data.barId,
           yearsOfExperience: data.yearsOfExperience,
@@ -273,6 +282,68 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
                 )}
               />
             </div>
+
+            {role === 'client' && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="+91 9999999999" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="idType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Government ID Type</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select ID Type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="passport">Passport</SelectItem>
+                            <SelectItem value="aadhar">Aadhar Card</SelectItem>
+                            <SelectItem value="driving">Driving License</SelectItem>
+                            <SelectItem value="voter">Voter ID</SelectItem>
+                            <SelectItem value="pan">PAN Card</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="idNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ID Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter ID Number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )}
 
             {role === 'lawyer' && (
               <>

@@ -1,9 +1,6 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '@/types';
-import clerksData from '@/data/users_clerks.json';
-import clientsData from '@/data/users_clients.json';
-import lawyersData from '@/data/users_lawyers.json';
-import judgesData from '@/data/users_judges.json';
 
 interface AuthContextType {
   user: User | null;
@@ -13,37 +10,28 @@ interface AuthContextType {
   signup: (email: string, password: string, userData: Partial<User>) => Promise<{ error: any }>;
   logout: () => Promise<void>;
   updateUser: (userData: User) => void;
+  canCommunicateWith: (role: UserRole) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const getAllUsers = () => {
-  const typedClerksData = clerksData.map(clerk => ({
-    ...clerk,
-    role: clerk.role as UserRole
-  }));
-
-  const typedClientsData = clientsData.map(client => ({
-    ...client,
-    role: client.role as UserRole
-  }));
-
-  const typedLawyersData = lawyersData.map(lawyer => ({
-    ...lawyer,
-    role: lawyer.role as UserRole
-  }));
-
-  const typedJudgesData = judgesData.map(judge => ({
-    ...judge,
-    role: judge.role as UserRole
-  }));
-
-  return [
-    ...typedClerksData, 
-    ...typedClientsData, 
-    ...typedLawyersData, 
-    ...typedJudgesData
-  ];
+  try {
+    const clerks = JSON.parse(localStorage.getItem('courtwise_users_clerks') || '[]');
+    const clients = JSON.parse(localStorage.getItem('courtwise_users_clients') || '[]');
+    const lawyers = JSON.parse(localStorage.getItem('courtwise_users_lawyers') || '[]');
+    const judges = JSON.parse(localStorage.getItem('courtwise_users_judges') || '[]');
+    
+    return [
+      ...clerks.map((clerk: any) => ({ ...clerk, role: 'clerk' as UserRole })),
+      ...clients.map((client: any) => ({ ...client, role: 'client' as UserRole })),
+      ...lawyers.map((lawyer: any) => ({ ...lawyer, role: 'lawyer' as UserRole })),
+      ...judges.map((judge: any) => ({ ...judge, role: 'judge' as UserRole }))
+    ];
+  } catch (error) {
+    console.error('Error parsing user data:', error);
+    return [];
+  }
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -133,7 +121,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         avatarUrl: userData.avatarUrl || `https://ui-avatars.com/api/?name=${userData.name || email.split('@')[0]}&background=random`,
       };
       
-      if (userData.role === 'lawyer') {
+      // Add role-specific data
+      if (userData.role === 'client') {
+        const clientData = userData as any;
+        if (clientData.phone) (newUser as any).phone = clientData.phone;
+        if (clientData.idType) (newUser as any).idType = clientData.idType;
+        if (clientData.idNumber) (newUser as any).idNumber = clientData.idNumber;
+      } else if (userData.role === 'lawyer') {
         const lawyerData = userData as any;
         if (lawyerData.specialization) (newUser as any).specialization = lawyerData.specialization;
         if (lawyerData.barId) (newUser as any).barId = lawyerData.barId;
@@ -201,6 +195,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Function to determine if the current user can communicate with a given role
+  const canCommunicateWith = (role: UserRole): boolean => {
+    if (!user) return false;
+    
+    // Define communication rules
+    switch (user.role) {
+      case 'client':
+        // Clients can only communicate with lawyers
+        return role === 'lawyer';
+      case 'lawyer':
+        // Lawyers can communicate with clients and clerks, but not judges directly
+        return role === 'client' || role === 'clerk';
+      case 'clerk':
+        // Clerks can communicate with lawyers and judges
+        return role === 'lawyer' || role === 'judge';
+      case 'judge':
+        // Judges can only communicate with clerks
+        return role === 'clerk';
+      default:
+        return false;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -210,7 +227,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         signup,
         logout,
-        updateUser
+        updateUser,
+        canCommunicateWith
       }}
     >
       {children}
