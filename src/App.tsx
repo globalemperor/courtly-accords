@@ -30,6 +30,18 @@ import FileCasePage from "./pages/FileCasePage";
 import ProfileEdit from "./pages/ProfileEdit";
 import { useAuth } from "./context/AuthContext";
 
+// Import the new pages for quick links
+import Features from "./pages/Features";
+import HowItWorks from "./pages/HowItWorks";
+import HelpCenter from "./pages/HelpCenter";
+import Documentation from "./pages/Documentation";
+import UserGuides from "./pages/UserGuides";
+import Faq from "./pages/Faq";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
+import GdprCompliance from "./pages/GdprCompliance";
+
 // Create a protected route component for lawyer-only routes
 const LawyerRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -100,17 +112,21 @@ const AppContent = () => {
                 <Route path="new-cases" element={<NewCases />} />
               </Route>
               
+              {/* Quick Links pages */}
+              <Route path="/features" element={<Features />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              
               {/* Help pages */}
-              <Route path="/help" element={<NotFound />} />
-              <Route path="/documentation" element={<NotFound />} />
-              <Route path="/guides" element={<NotFound />} />
-              <Route path="/faq" element={<NotFound />} />
+              <Route path="/help" element={<HelpCenter />} />
+              <Route path="/documentation" element={<Documentation />} />
+              <Route path="/guides" element={<UserGuides />} />
+              <Route path="/faq" element={<Faq />} />
               
               {/* Legal pages */}
-              <Route path="/terms" element={<NotFound />} />
-              <Route path="/privacy" element={<NotFound />} />
-              <Route path="/cookies" element={<NotFound />} />
-              <Route path="/gdpr" element={<NotFound />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
+              <Route path="/gdpr" element={<GdprCompliance />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>

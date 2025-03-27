@@ -308,7 +308,7 @@ const Index = () => {
       </section>
 
       {/* Learn More Section - Simplified */}
-      <section id="learn-more" className="py-12 px-4 bg-court-gray">
+      <section id="how-it-works" className="py-12 px-4 bg-court-gray">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
             Getting Started with CourtWise
@@ -429,8 +429,8 @@ const Index = () => {
               <h3 className="text-lg font-semibold mb-4 text-white">Quick Links</h3>
               <ul className="space-y-2">
                 <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#learn-more" className="hover:text-white transition-colors">How It Works</a></li>
+                <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link to="/how-it-works" className="hover:text-white transition-colors">How It Works</Link></li>
                 <li><Link to="/login" className="hover:text-white transition-colors">Sign In</Link></li>
               </ul>
             </div>
