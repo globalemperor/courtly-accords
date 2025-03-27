@@ -76,9 +76,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     try {
       const allUsers = getAllUsers();
-      const user = allUsers.find(u => u.email === email && u.password === password);
+      const user = allUsers.find(u => u.email === email);
       
-      if (!user) {
+      if (!user || user.password !== password) {
         return { error: { message: "Invalid login credentials" } };
       }
       
@@ -119,6 +119,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: userData.name || email.split('@')[0],
         role: userData.role || 'client',
         avatarUrl: userData.avatarUrl || `https://ui-avatars.com/api/?name=${userData.name || email.split('@')[0]}&background=random`,
+        phone: userData.phone || '',
+        idType: userData.idType || '',
+        idNumber: userData.idNumber || '',
       };
       
       // Add role-specific data
@@ -132,15 +135,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (lawyerData.specialization) (newUser as any).specialization = lawyerData.specialization;
         if (lawyerData.barId) (newUser as any).barId = lawyerData.barId;
         if (lawyerData.yearsOfExperience) (newUser as any).yearsOfExperience = lawyerData.yearsOfExperience;
+        if (lawyerData.phone) (newUser as any).phone = lawyerData.phone;
+        if (lawyerData.idType) (newUser as any).idType = lawyerData.idType;
+        if (lawyerData.idNumber) (newUser as any).idNumber = lawyerData.idNumber;
       } else if (userData.role === 'clerk') {
         const clerkData = userData as any;
         if (clerkData.courtId) (newUser as any).courtId = clerkData.courtId;
         if (clerkData.department) (newUser as any).department = clerkData.department;
+        if (clerkData.phone) (newUser as any).phone = clerkData.phone;
+        if (clerkData.idType) (newUser as any).idType = clerkData.idType;
+        if (clerkData.idNumber) (newUser as any).idNumber = clerkData.idNumber;
       } else if (userData.role === 'judge') {
         const judgeData = userData as any;
         if (judgeData.chamberNumber) (newUser as any).chamberNumber = judgeData.chamberNumber;
         if (judgeData.courtDistrict) (newUser as any).courtDistrict = judgeData.courtDistrict;
         if (judgeData.yearsOnBench) (newUser as any).yearsOnBench = judgeData.yearsOnBench;
+        if (judgeData.phone) (newUser as any).phone = judgeData.phone;
+        if (judgeData.idType) (newUser as any).idType = judgeData.idType;
+        if (judgeData.idNumber) (newUser as any).idNumber = judgeData.idNumber;
       }
       
       const existingUsersKey = `courtwise_users_${newUser.role}s`;

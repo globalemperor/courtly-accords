@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, Briefcase, BarChart4, Shield, Info } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,31 +11,6 @@ const platformStats = {
   judges: "420+",
   clerks: "650+",
   casesResolved: "10,500+",
-};
-
-// User role features organized by category
-const roleFeatures = {
-  clients: [
-    "Request legal representation by browsing available lawyers",
-    "Track case progress through your personalized dashboard",
-    "Communicate with your lawyer through the secure messaging system",
-    "Receive notifications about upcoming hearings and case updates",
-    "Access and review all case documents in one place"
-  ],
-  lawyers: [
-    "Manage client requests and accept new cases",
-    "File and track cases through the entire legal process",
-    "Communicate with clients, clerks, and judges securely",
-    "Organize your schedule with the integrated calendar",
-    "Store and access case documents with advanced search capabilities"
-  ],
-  officials: [
-    "Manage court schedules and hearing assignments efficiently",
-    "Process case filings and maintain court records",
-    "Communicate with relevant parties through role-specific channels",
-    "Track case progress and generate reports",
-    "Access comprehensive case histories and documentation"
-  ]
 };
 
 const features = [
@@ -133,35 +107,25 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Role Features Section - New Compact Format */}
+      {/* Role Features Section - Simplified with just role cards */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Tailored for Every Court Participant
+            Login by Role
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Client Features */}
-            <Card className="hover:shadow-lg transition-all duration-300">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Client Box */}
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6">
                 <div className="flex justify-center mb-5">
                   <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
-                    <Users className="h-8 w-8 text-court-blue" />
+                    <Users className="h-8 w-8 text-blue-500" />
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-center">For Clients</h3>
-                <div className="space-y-2">
-                  {roleFeatures.clients.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <div className="bg-green-500 text-white rounded-full h-5 w-5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-xs">{idx + 1}</span>
-                      </div>
-                      <p className="text-sm">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 text-center">
-                  <Button variant="outline" asChild className="w-full hover:bg-court-blue hover:text-white transition-colors">
+                <div className="mt-4 text-center">
+                  <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-colors">
                     <Link to="/login/client" className="flex items-center justify-center">
                       <span>Login as Client</span>
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -171,27 +135,17 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            {/* Lawyer Features */}
-            <Card className="hover:shadow-lg transition-all duration-300">
+            {/* Lawyer Box */}
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6">
                 <div className="flex justify-center mb-5">
                   <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
-                    <Briefcase className="h-8 w-8 text-court-blue" />
+                    <Briefcase className="h-8 w-8 text-green-500" />
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-center">For Lawyers</h3>
-                <div className="space-y-2">
-                  {roleFeatures.lawyers.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <div className="bg-blue-500 text-white rounded-full h-5 w-5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-xs">{idx + 1}</span>
-                      </div>
-                      <p className="text-sm">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 text-center">
-                  <Button variant="outline" asChild className="w-full hover:bg-court-blue hover:text-white transition-colors">
+                <div className="mt-4 text-center">
+                  <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-colors">
                     <Link to="/login/lawyer" className="flex items-center justify-center">
                       <span>Login as Lawyer</span>
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -201,36 +155,40 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            {/* Court Officials Features */}
-            <Card className="hover:shadow-lg transition-all duration-300">
+            {/* Clerk Box */}
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6">
                 <div className="flex justify-center mb-5">
                   <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
-                    <Gavel className="h-8 w-8 text-court-blue" />
+                    <UserCog className="h-8 w-8 text-purple-500" />
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Court Officials</h3>
-                <div className="space-y-2">
-                  {roleFeatures.officials.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <div className="bg-court-blue text-white rounded-full h-5 w-5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-xs">{idx + 1}</span>
-                      </div>
-                      <p className="text-sm">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 text-center grid grid-cols-2 gap-2">
-                  <Button variant="outline" asChild className="hover:bg-court-blue hover:text-white transition-colors">
-                    <Link to="/login/judge" className="flex items-center justify-center text-xs">
-                      <span>Judge Login</span>
-                      <ArrowRight className="ml-1 h-3 w-3" />
+                <h3 className="text-xl font-semibold mb-4 text-center">For Clerks</h3>
+                <div className="mt-4 text-center">
+                  <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-colors">
+                    <Link to="/login/clerk" className="flex items-center justify-center">
+                      <span>Login as Clerk</span>
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button variant="outline" asChild className="hover:bg-court-blue hover:text-white transition-colors">
-                    <Link to="/login/clerk" className="flex items-center justify-center text-xs">
-                      <span>Clerk Login</span>
-                      <ArrowRight className="ml-1 h-3 w-3" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Judge Box */}
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6">
+                <div className="flex justify-center mb-5">
+                  <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
+                    <Gavel className="h-8 w-8 text-red-500" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-center">For Judges</h3>
+                <div className="mt-4 text-center">
+                  <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-colors">
+                    <Link to="/login/judge" className="flex items-center justify-center">
+                      <span>Login as Judge</span>
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
@@ -419,7 +377,7 @@ const Index = () => {
                 </Link>
                 <Link to="#" className="h-8 w-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd"></path>
+                    <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.504.344-1.857.182-.467.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd"></path>
                   </svg>
                 </Link>
               </div>

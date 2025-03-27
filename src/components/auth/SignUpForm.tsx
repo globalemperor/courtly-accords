@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,13 +14,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CountryCodeSelector } from "./CountryCodeSelector";
 
-const clientSchema = z.object({
+// Base schema for common fields
+const baseSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string(),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  countryCode: z.string(),
+  phoneNumber: z.string().min(5, "Phone number is required"),
   idType: z.string().min(1, "ID type is required"),
   idNumber: z.string().min(1, "ID number is required"),
 }).refine(data => data.password === data.confirmPassword, {
@@ -27,42 +31,24 @@ const clientSchema = z.object({
   path: ["confirmPassword"]
 });
 
-const lawyerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
+// Role-specific schemas with additional fields
+const clientSchema = baseSchema;
+
+const lawyerSchema = baseSchema.extend({
   barId: z.string().min(3, "Bar ID is required"),
   yearsOfExperience: z.string().min(1, "Years of experience is required"),
   specialization: z.string().optional(),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"]
 });
 
-const clerkSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
+const clerkSchema = baseSchema.extend({
   courtId: z.string().min(3, "Court ID is required"),
   department: z.string().optional(),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"]
 });
 
-const judgeSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
+const judgeSchema = baseSchema.extend({
   chamberNumber: z.string().min(1, "Chamber number is required"),
   courtDistrict: z.string().min(2, "Court district is required"),
   yearsOnBench: z.string().optional(),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"]
 });
 
 const getSchemaForRole = (role: UserRole) => {
@@ -91,6 +77,7 @@ interface SignUpFormProps {
 export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState<UserRole>(defaultRole);
+  const [selectedCountry, setSelectedCountry] = useState<any>(null);
   const { signup } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -102,7 +89,8 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
       email: "",
       password: "",
       confirmPassword: "",
-      phone: "",
+      countryCode: "+1",
+      phoneNumber: "",
       idType: "",
       idNumber: "",
       barId: "",
@@ -122,18 +110,26 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
     form.clearErrors();
   };
 
+  const handleCountryCodeChange = (value: string) => {
+    form.setValue("countryCode", value);
+  };
+
+  const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
+    return `${countryCode}${phoneNumber.startsWith("0") ? phoneNumber.substring(1) : phoneNumber}`;
+  };
+
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
       const { name, email, password } = data;
+      const formattedPhone = formatPhoneNumber(data.countryCode, data.phoneNumber);
+      
       const userData = {
         name,
         role,
-        ...(role === 'client' && { 
-          phone: data.phone,
-          idType: data.idType,
-          idNumber: data.idNumber
-        }),
+        phone: formattedPhone,
+        idType: data.idType,
+        idNumber: data.idNumber,
         ...(role === 'lawyer' && { 
           barId: data.barId,
           yearsOfExperience: data.yearsOfExperience,
@@ -283,67 +279,88 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
               />
             </div>
 
-            {role === 'client' && (
-              <>
+            {/* Phone number with country code */}
+            <div className="space-y-2">
+              <FormLabel>Phone Number</FormLabel>
+              <div className="flex gap-2">
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="countryCode"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                    <FormItem className="flex-shrink-0">
                       <FormControl>
-                        <Input placeholder="+91 9999999999" {...field} />
+                        <CountryCodeSelector 
+                          value={field.value} 
+                          onChange={handleCountryCodeChange} 
+                          onCountryChange={setSelectedCountry}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="idType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Government ID Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select ID Type" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="passport">Passport</SelectItem>
-                            <SelectItem value="aadhar">Aadhar Card</SelectItem>
-                            <SelectItem value="driving">Driving License</SelectItem>
-                            <SelectItem value="voter">Voter ID</SelectItem>
-                            <SelectItem value="pan">PAN Card</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem className="flex-grow">
+                      <FormControl>
+                        <Input placeholder="Enter phone number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
 
-                  <FormField
-                    control={form.control}
-                    name="idNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>ID Number</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter ID Number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </>
-            )}
+            {/* Government ID selection - common for all roles */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="idType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Government ID Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select ID Type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="passport">Passport</SelectItem>
+                        <SelectItem value="aadhar">Aadhar Card</SelectItem>
+                        <SelectItem value="driving">Driving License</SelectItem>
+                        <SelectItem value="voter">Voter ID</SelectItem>
+                        <SelectItem value="pan">PAN Card</SelectItem>
+                        <SelectItem value="national">National ID</SelectItem>
+                        <SelectItem value="other">Other Government ID</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="idNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ID Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter ID Number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {role === 'lawyer' && (
               <>
