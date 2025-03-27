@@ -29,6 +29,7 @@ import {
   AlertDialogTitle, 
   AlertDialogTrigger 
 } from "@/components/ui/alert-dialog";
+import { useData } from "@/context/DataContext";
 
 // Role icon component with dropdown
 const RoleIcon = ({ role, showDropdown = false }: { role: UserRole, showDropdown?: boolean }) => {
@@ -110,6 +111,66 @@ const getRoleTitle = (role: UserRole) => {
     case 'clerk': return "Clerk";
     case 'judge': return "Judge";
   }
+};
+
+const TestAccountsAlert = ({ role }: { role: UserRole }) => {
+  const { useEmptyData, setUseEmptyData } = useData();
+  const [displayMode, setDisplayMode] = useState(useEmptyData ? 'test' : 'demo');
+  
+  const handleModeChange = (mode: string) => {
+    setUseEmptyData(mode === 'test');
+    setDisplayMode(mode);
+  };
+  
+  const getTestAccount = () => {
+    switch (role) {
+      case 'client': return "testclient@example.com";
+      case 'lawyer': return "testlawyer1@example.com or testlawyer2@example.com";
+      case 'clerk': return "testclerk@example.com";
+      case 'judge': return "testjudge@example.com";
+      default: return "";
+    }
+  };
+  
+  const getDemoAccount = () => {
+    switch (role) {
+      case 'client': return "client@example.com";
+      case 'lawyer': return "lawyer@example.com or jennifer@example.com";
+      case 'clerk': return "clerk@example.com";
+      case 'judge': return "judge@example.com";
+      default: return "";
+    }
+  };
+  
+  return (
+    <div className="bg-gray-100 p-4 rounded-lg mb-4">
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="font-semibold flex items-center">
+          <Info className="h-4 w-4 mr-2 text-blue-500" />
+          Test Accounts
+        </h3>
+        <div className="flex space-x-2 text-sm">
+          <button 
+            className={`px-2 py-1 rounded ${displayMode === 'test' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleModeChange('test')}
+          >
+            Test Mode
+          </button>
+          <button 
+            className={`px-2 py-1 rounded ${displayMode === 'demo' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleModeChange('demo')}
+          >
+            Demo Mode
+          </button>
+        </div>
+      </div>
+      <p className="text-sm text-gray-600">
+        <span className="font-medium">Email:</span> {displayMode === 'test' ? getTestAccount() : getDemoAccount()}
+        <br />
+        <span className="font-medium">Password:</span> password
+      </p>
+    </div>
+  );
 };
 
 const Login = () => {
@@ -239,6 +300,9 @@ const Login = () => {
           <h1 className="text-2xl font-bold">CourtWise</h1>
           <p className="text-muted-foreground">Court Case Management System</p>
         </div>
+        
+        {/* Test accounts info */}
+        <TestAccountsAlert role={validRole} />
         
         {isSignUp ? (
           <SignUpForm defaultRole={validRole} />

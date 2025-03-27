@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '@/types';
 import clerksData from '@/data/users_clerks.json';
@@ -18,24 +17,23 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper to get all users from localStorage with JSON fallback
 const getAllUsers = () => {
-  const typedClerksData = JSON.parse(localStorage.getItem('courtwise_users_clerks') || '[]').map((clerk: any) => ({
+  const typedClerksData = clerksData.map(clerk => ({
     ...clerk,
     role: clerk.role as UserRole
   }));
 
-  const typedClientsData = JSON.parse(localStorage.getItem('courtwise_users_clients') || '[]').map((client: any) => ({
+  const typedClientsData = clientsData.map(client => ({
     ...client,
     role: client.role as UserRole
   }));
 
-  const typedLawyersData = JSON.parse(localStorage.getItem('courtwise_users_lawyers') || '[]').map((lawyer: any) => ({
+  const typedLawyersData = lawyersData.map(lawyer => ({
     ...lawyer,
     role: lawyer.role as UserRole
   }));
 
-  const typedJudgesData = JSON.parse(localStorage.getItem('courtwise_users_judges') || '[]').map((judge: any) => ({
+  const typedJudgesData = judgesData.map(judge => ({
     ...judge,
     role: judge.role as UserRole
   }));
@@ -65,7 +63,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (storedUserData) {
             const userData = JSON.parse(storedUserData);
             setUser(userData);
-            console.log("User restored from local storage:", userData.email);
           } else {
             const allUsers = getAllUsers();
             const userFromJson = allUsers.find(u => u.id === session.user.id);
@@ -73,7 +70,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (userFromJson) {
               setUser(userFromJson);
               localStorage.setItem('courtwise_user', JSON.stringify(userFromJson));
-              console.log("User found in all users:", userFromJson.email);
             }
           }
         } catch (error) {
@@ -81,8 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.removeItem('courtwise_session');
           localStorage.removeItem('courtwise_user');
         }
-      } else {
-        console.log("No stored session found");
       }
       
       setLoading(false);
@@ -93,18 +87,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      console.log("Login attempt for:", email);
       const allUsers = getAllUsers();
-      console.log("All users count:", allUsers.length);
-      
       const user = allUsers.find(u => u.email === email && u.password === password);
       
       if (!user) {
-        console.log("User not found or password incorrect");
         return { error: { message: "Invalid login credentials" } };
       }
       
-      console.log("User found, creating session for:", user.email);
       const session = {
         user: {
           id: user.id,
@@ -128,12 +117,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signup = async (email: string, password: string, userData: Partial<User>) => {
     try {
-      console.log("Signup attempt for:", email, "with role:", userData.role);
       const allUsers = getAllUsers();
       const existingUser = allUsers.find(u => u.email === email);
       
       if (existingUser) {
-        console.log("Email already in use");
         return { error: { message: "Email already in use" } };
       }
       
@@ -146,7 +133,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         avatarUrl: userData.avatarUrl || `https://ui-avatars.com/api/?name=${userData.name || email.split('@')[0]}&background=random`,
       };
       
-      // Add role-specific fields
       if (userData.role === 'lawyer') {
         const lawyerData = userData as any;
         if (lawyerData.specialization) (newUser as any).specialization = lawyerData.specialization;
@@ -163,14 +149,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (judgeData.yearsOnBench) (newUser as any).yearsOnBench = judgeData.yearsOnBench;
       }
       
-      // Save to role-specific storage
       const existingUsersKey = `courtwise_users_${newUser.role}s`;
-      console.log("Saving user to:", existingUsersKey);
       const existingUsers = JSON.parse(localStorage.getItem(existingUsersKey) || '[]');
       existingUsers.push(newUser);
       localStorage.setItem(existingUsersKey, JSON.stringify(existingUsers));
       
-      // Create session
       const session = {
         user: {
           id: newUser.id,
@@ -185,7 +168,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('courtwise_user', JSON.stringify(newUser));
       
       setUser(newUser);
-      console.log("User successfully created:", newUser.email);
       return { error: null };
     } catch (error) {
       console.error('Signup error:', error);
@@ -198,7 +180,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('courtwise_session');
       localStorage.removeItem('courtwise_user');
       setUser(null);
-      console.log("User logged out");
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -215,7 +196,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         u.id === userData.id ? userData : u
       );
       localStorage.setItem(usersKey, JSON.stringify(updatedUsers));
-      console.log("User updated in storage:", userData.email);
     } catch (error) {
       console.error(`Error updating user in ${usersKey}:`, error);
     }

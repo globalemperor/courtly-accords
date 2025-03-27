@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -147,6 +146,10 @@ export const SignInForm = ({ role }: SignInFormProps) => {
     }
   };
 
+  const getSuggestionMessage = () => {
+    return `For demo: Use "${role}@example.com" with password "password"`;
+  };
+
   return (
     <Card className="w-full max-w-md shadow-lg animate-fadeIn">
       <CardHeader className="space-y-2 text-center">
@@ -172,7 +175,7 @@ export const SignInForm = ({ role }: SignInFormProps) => {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="your.email@example.com"
+                      placeholder={`${role}@example.com`}
                       {...field}
                     />
                   </FormControl>
@@ -195,6 +198,9 @@ export const SignInForm = ({ role }: SignInFormProps) => {
                     />
                   </FormControl>
                   <FormMessage />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {getSuggestionMessage()}
+                  </p>
                 </FormItem>
               )}
             />
