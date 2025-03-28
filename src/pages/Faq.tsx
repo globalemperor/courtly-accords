@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,8 @@ import {
   MessageCircle, 
   Calendar, 
   Lock, 
-  HelpCircle 
+  HelpCircle,
+  Bot
 } from "lucide-react";
 
 interface FAQItem {
@@ -159,7 +159,6 @@ const Faq = () => {
   ];
 
   useEffect(() => {
-    // Filter FAQs based on search query
     if (searchQuery.trim() === "") {
       setFilteredFaqs(faqItems);
     } else {
@@ -175,10 +174,8 @@ const Faq = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // The filtering is already handled by the useEffect
   };
 
-  // Get FAQs for a specific category
   const getFaqsByCategory = (category: string) => {
     if (category === "all") return filteredFaqs;
     return filteredFaqs.filter(item => item.category === category);
@@ -186,7 +183,6 @@ const Faq = () => {
 
   return (
     <div className="min-h-screen bg-court-gray">
-      {/* Header */}
       <header className="bg-court-blue text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <Link to="/help" className="inline-flex items-center text-white hover:text-white/80 mb-6">
@@ -255,7 +251,6 @@ const Faq = () => {
                         <AccordionContent className="text-muted-foreground pt-2 pb-4 px-2">
                           <p>{faq.answer}</p>
                           
-                          {/* Role tags */}
                           <div className="flex flex-wrap gap-2 mt-4">
                             {faq.roles.includes("client") && (
                               <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center">
@@ -304,13 +299,13 @@ const Faq = () => {
           ))}
         </Tabs>
 
-        {/* Didn't find your answer section */}
         <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 mt-10">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="md:w-2/3">
               <h2 className="text-xl font-bold mb-2">Didn't find what you were looking for?</h2>
               <p className="text-muted-foreground mb-4">
-                Our support team is ready to help you with any additional questions you may have.
+                Try our AI assistant available in the bottom-right corner of your screen when logged in. 
+                For more complex inquiries, our support team is ready to help you.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild variant="default" className="bg-court-blue hover:bg-court-blue-dark">
@@ -322,15 +317,19 @@ const Faq = () => {
               </div>
             </div>
             <div className="md:w-1/3 flex justify-center">
-              <div className="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center">
-                <MessageCircle className="h-12 w-12 text-blue-600" />
+              <div className="relative">
+                <div className="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center">
+                  <MessageCircle className="h-12 w-12 text-blue-600" />
+                </div>
+                <div className="absolute -top-2 -right-2 h-10 w-10 rounded-full bg-court-blue flex items-center justify-center">
+                  <Bot className="h-5 w-5 text-white" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Simple Footer */}
       <footer className="bg-court-blue-dark text-white/80 py-6 text-center">
         <div className="max-w-6xl mx-auto px-4">
           <p>© 2023 CourtWise. All rights reserved.</p>

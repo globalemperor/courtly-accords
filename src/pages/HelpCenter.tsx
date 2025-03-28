@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,8 @@ import {
   Lightbulb, 
   Video, 
   PlayCircle, 
-  ArrowRight 
+  ArrowRight,
+  Bot 
 } from "lucide-react";
 
 const HelpCenter = () => {
@@ -237,16 +237,30 @@ const HelpCenter = () => {
               <div className="flex flex-col md:flex-row items-center">
                 <div className="md:w-2/3">
                   <h2 className="text-2xl font-bold mb-2">Still Need Help?</h2>
-                  <p className="text-muted-foreground mb-6">
-                    Our support team is available to assist you with any questions or issues you may have.
+                  <p className="text-muted-foreground mb-4">
+                    Try our AI assistant that's available in the bottom-right corner when you're logged in.
+                    For more complex issues, our support team is available to assist you directly.
                   </p>
-                  <Button asChild size="lg" className="bg-court-blue hover:bg-court-blue-dark">
-                    <Link to="/contact">Contact Support</Link>
-                  </Button>
+                  <div className="flex flex-wrap gap-3">
+                    <Button asChild size="lg" className="bg-court-blue hover:bg-court-blue-dark">
+                      <Link to="/contact">Contact Support</Link>
+                    </Button>
+                    <Button asChild variant="outline" size="lg">
+                      <span className="flex items-center gap-2">
+                        <Bot className="h-4 w-4" />
+                        AI Assistant
+                      </span>
+                    </Button>
+                  </div>
                 </div>
                 <div className="md:w-1/3 flex justify-center mt-6 md:mt-0">
-                  <div className="h-32 w-32 rounded-full bg-blue-100 flex items-center justify-center">
-                    <MessageSquare className="h-16 w-16 text-blue-600" />
+                  <div className="relative">
+                    <div className="h-32 w-32 rounded-full bg-blue-100 flex items-center justify-center">
+                      <MessageSquare className="h-16 w-16 text-blue-600" />
+                    </div>
+                    <div className="absolute top-0 right-0 h-12 w-12 rounded-full bg-court-blue flex items-center justify-center">
+                      <Bot className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </div>
               </div>
