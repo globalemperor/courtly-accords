@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, Briefcase, BarChart4, Shield, Info, UserCog } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -109,7 +108,7 @@ const Index = () => {
       </section>
 
       {/* Role Features Section - Simplified with just role cards */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4 bg-white" id="login-options">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
             Login by Role
@@ -118,81 +117,53 @@ const Index = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Client Box */}
             <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-6">
-                <div className="flex justify-center mb-5">
-                  <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
-                    <Users className="h-8 w-8 text-blue-500" />
-                  </div>
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <Users className="h-8 w-8 text-blue-500" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-center">For Clients</h3>
-                <div className="mt-4 text-center">
-                  <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-colors">
-                    <Link to="/login/client" className="flex items-center justify-center">
-                      <span>Login as Client</span>
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
+                <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-colors">
+                  <Link to="/login/client">Login</Link>
+                </Button>
               </CardContent>
             </Card>
             
             {/* Lawyer Box */}
             <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-6">
-                <div className="flex justify-center mb-5">
-                  <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
-                    <Briefcase className="h-8 w-8 text-green-500" />
-                  </div>
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <Scale className="h-8 w-8 text-green-500" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-center">For Lawyers</h3>
-                <div className="mt-4 text-center">
-                  <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-colors">
-                    <Link to="/login/lawyer" className="flex items-center justify-center">
-                      <span>Login as Lawyer</span>
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
+                <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-colors">
+                  <Link to="/login/lawyer">Login</Link>
+                </Button>
               </CardContent>
             </Card>
             
             {/* Clerk Box */}
             <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-6">
-                <div className="flex justify-center mb-5">
-                  <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
-                    <UserCog className="h-8 w-8 text-purple-500" />
-                  </div>
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <UserCog className="h-8 w-8 text-purple-500" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-center">For Clerks</h3>
-                <div className="mt-4 text-center">
-                  <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-colors">
-                    <Link to="/login/clerk" className="flex items-center justify-center">
-                      <span>Login as Clerk</span>
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
+                <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-colors">
+                  <Link to="/login/clerk">Login</Link>
+                </Button>
               </CardContent>
             </Card>
             
             {/* Judge Box */}
             <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-6">
-                <div className="flex justify-center mb-5">
-                  <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center">
-                    <Gavel className="h-8 w-8 text-red-500" />
-                  </div>
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <Gavel className="h-8 w-8 text-red-500" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-center">For Judges</h3>
-                <div className="mt-4 text-center">
-                  <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-colors">
-                    <Link to="/login/judge" className="flex items-center justify-center">
-                      <span>Login as Judge</span>
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
+                <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-colors">
+                  <Link to="/login/judge">Login</Link>
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -266,7 +237,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Learn More Section - Simplified */}
+      {/* Learn More Section */}
       <section id="how-it-works" className="py-12 px-4 bg-court-gray">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">

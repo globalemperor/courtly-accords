@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { DataProvider } from "./context/DataContext";
 import { useEffect } from "react";
 import setupTestEnvironment from "./utils/initialSetup";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 // New page imports
 import Messages from "./pages/Messages";
@@ -61,6 +61,7 @@ setupTestEnvironment();
 const AppContent = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <DataProvider>
           <TooltipProvider>
