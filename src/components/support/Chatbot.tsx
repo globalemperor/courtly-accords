@@ -30,15 +30,62 @@ export const Chatbot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Greeting responses
+  const greetingResponses = [
+    "Hi there! How can I assist you with CourtWise today?",
+    "Hello! What can I help you with?",
+    "Hey! I'm here to help with any questions about CourtWise.",
+    "Hi! How can I make your CourtWise experience better today?"
+  ];
+
+  // Questions about the assistant
+  const aboutBotResponses = [
+    "I'm the CourtWise AI assistant, here to help with any questions you have about using the platform.",
+    "I'm an AI designed to help CourtWise users navigate the platform and answer common questions."
+  ];
+
+  // Thank you responses
+  const thankYouResponses = [
+    "You're welcome! Is there anything else I can help with?",
+    "Happy to help! Let me know if you need anything else.",
+    "My pleasure! Do you have any other questions about CourtWise?"
+  ];
+
   // Predefined answers based on keywords
-  const predefinedAnswers: Record<string, string> = {
-    "create account": "To create an account, click on the 'Get Started' or 'Sign Up' button on the homepage. Select your user role (client, lawyer, clerk, or judge), provide your email address, create a password, and fill in your personal/professional information. You'll need to verify your email address to complete the registration process.",
-    "password": "You can reset your password by clicking on the 'Forgot Password' link on the login page. You'll receive an email with instructions to create a new password. For security reasons, passwords must be at least 8 characters long and include a combination of letters, numbers, and symbols.",
-    "login issues": "If you're having trouble logging in, first ensure you're using the correct email address and password. Check if Caps Lock is enabled. You can use the 'Forgot Password' link on the login page to reset your password. If you continue to experience issues, clear your browser cache and cookies, or try using a different browser.",
-    "security": "CourtWise takes data security very seriously. We implement enterprise-grade encryption, secure authentication protocols, and regular security audits. All data is encrypted both in transit and at rest, and we comply with legal data protection standards including GDPR and other relevant regulations.",
-    "contact": "For urgent support, you can contact our team directly at support@courtwise.com or call our support line at (555) 123-4567 during business hours (9 AM - 5 PM EST, Monday to Friday).",
-    "document upload": "To upload documents, navigate to the relevant case in your dashboard, then click the 'Documents' tab. You can drag and drop files or click 'Upload Documents' to browse your files. We support PDF, DOCX, JPG, and PNG formats with a maximum file size of 25MB per document.",
-    "hearing": "Court hearing schedules can be viewed in the 'Hearings' section of your dashboard. You can filter by upcoming hearings, past hearings, or search for specific dates. Calendar invitations can be downloaded and notifications can be configured in your profile settings.",
+  const predefinedAnswers: Record<string, string[]> = {
+    "create account": [
+      "To create an account, click on the 'Get Started' or 'Sign Up' button on the homepage. Select your user role (client, lawyer, clerk, or judge), provide your email address, create a password, and fill in your personal/professional information. You'll need to verify your email address to complete the registration process.",
+      "Creating an account is simple! Go to our homepage and click 'Sign Up'. Choose your role, enter your details, and verify your email. Need more help with a specific part of the process?"
+    ],
+    "password": [
+      "You can reset your password by clicking on the 'Forgot Password' link on the login page. You'll receive an email with instructions to create a new password. For security reasons, passwords must be at least 8 characters long and include a combination of letters, numbers, and symbols.",
+      "Password issues? Click 'Forgot Password' on the login screen to reset it. Make sure your new password is at least 8 characters with letters, numbers, and symbols for security."
+    ],
+    "login issues": [
+      "If you're having trouble logging in, first ensure you're using the correct email address and password. Check if Caps Lock is enabled. You can use the 'Forgot Password' link on the login page to reset your password. If you continue to experience issues, clear your browser cache and cookies, or try using a different browser.",
+      "Login problems can be frustrating. First, verify your email and password are correct and check your Caps Lock. The 'Forgot Password' link can help you reset. Still having trouble? Try clearing your browser cache or using a different browser."
+    ],
+    "security": [
+      "CourtWise takes data security very seriously. We implement enterprise-grade encryption, secure authentication protocols, and regular security audits. All data is encrypted both in transit and at rest, and we comply with legal data protection standards including GDPR and other relevant regulations.",
+      "Your data security is our top priority! We use enterprise-grade encryption, maintain strict access controls, and comply with all relevant data protection regulations. All communications and stored information are fully encrypted."
+    ],
+    "contact": [
+      "For urgent support, you can contact our team directly at support@courtwise.com or call our support line at (555) 123-4567 during business hours (9 AM - 5 PM EST, Monday to Friday).",
+      "Need to reach our team directly? Email us at support@courtwise.com or call (555) 123-4567 between 9 AM and 5 PM EST, Monday through Friday."
+    ],
+    "document upload": [
+      "To upload documents, navigate to the relevant case in your dashboard, then click the 'Documents' tab. You can drag and drop files or click 'Upload Documents' to browse your files. We support PDF, DOCX, JPG, and PNG formats with a maximum file size of 25MB per document.",
+      "For document uploads, go to your case page, select the 'Documents' tab, and use the upload button or drag-and-drop. We support PDF, DOCX, JPG, and PNG files up to 25MB each."
+    ],
+    "hearing": [
+      "Court hearing schedules can be viewed in the 'Hearings' section of your dashboard. You can filter by upcoming hearings, past hearings, or search for specific dates. Calendar invitations can be downloaded and notifications can be configured in your profile settings.",
+      "Find all your hearing information in the 'Hearings' tab on your dashboard. You can filter, search, and set up notifications for upcoming events. Need to add a hearing to your calendar? Just click the download button next to any hearing."
+    ],
+  };
+
+  // Random response picker
+  const getRandomResponse = (responses: string[]) => {
+    return responses[Math.floor(Math.random() * responses.length)];
   };
 
   useEffect(() => {
@@ -61,13 +108,27 @@ export const Chatbot = () => {
     
     // Simulate a delay for a more natural conversation flow
     setTimeout(() => {
-      let response = "I don't have specific information about that. Would you like me to connect you with a support agent for further assistance?";
+      let response = "I don't have specific information about that yet. Would you like me to connect you with a support agent for more help?";
       
+      // Check for greetings
+      if (/^(hi|hello|hey|greetings|howdy|hi there)/i.test(messageLower)) {
+        response = getRandomResponse(greetingResponses);
+      }
+      // Check for questions about the bot
+      else if (/who (are|r) you|what (are|r) you|tell me about you/i.test(messageLower)) {
+        response = getRandomResponse(aboutBotResponses);
+      }
+      // Check for thank you messages
+      else if (/thank you|thanks|thx|ty/i.test(messageLower)) {
+        response = getRandomResponse(thankYouResponses);
+      }
       // Check for keyword matches
-      for (const [keyword, answer] of Object.entries(predefinedAnswers)) {
-        if (messageLower.includes(keyword.toLowerCase())) {
-          response = answer;
-          break;
+      else {
+        for (const [keyword, answers] of Object.entries(predefinedAnswers)) {
+          if (messageLower.includes(keyword.toLowerCase())) {
+            response = getRandomResponse(answers);
+            break;
+          }
         }
       }
       
