@@ -1,11 +1,8 @@
-
 import { Button } from "@/components/ui/button";
-import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, Briefcase, BarChart4, Shield, Info, UserCog, ChevronRight, Clock, Award, ScrollText } from "lucide-react";
+import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, Briefcase, BarChart4, Shield, Info, UserCog } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { motion } from "./motion";
-import { useEffect, useState, useRef, RefObject } from "react";
 
 // Mock stats for the platform
 const platformStats = {
@@ -16,35 +13,26 @@ const platformStats = {
   casesResolved: "10,500+",
 };
 
-// Main features array
 const features = [
   {
     title: "User Role-Based Access",
     description: "Separate interfaces for clients, lawyers, clerks, and judges with appropriate permissions and views.",
     icon: Users,
-    color: "bg-blue-100 text-blue-600",
-    hoverColor: "group-hover:bg-blue-200",
   },
   {
     title: "Case Management",
     description: "Create, view, update, and track court cases with comprehensive details and document management.",
     icon: BookOpen,
-    color: "bg-green-100 text-green-600",
-    hoverColor: "group-hover:bg-green-200",
   },
   {
     title: "Hearing Scheduling",
     description: "Schedule and manage court hearings, with notifications for all involved parties.",
     icon: Scale,
-    color: "bg-purple-100 text-purple-600",
-    hoverColor: "group-hover:bg-purple-200",
   },
   {
     title: "Secure Communication",
     description: "Built-in messaging system for direct communication between clients, lawyers, clerks, and judges.",
     icon: Gavel,
-    color: "bg-amber-100 text-amber-600",
-    hoverColor: "group-hover:bg-amber-200",
   },
 ];
 
@@ -54,401 +42,183 @@ const additionalFeatures = [
     title: "Document Management",
     description: "Store, organize, and share legal documents securely within the platform.",
     icon: Briefcase,
-    color: "from-blue-500 to-cyan-400",
   },
   {
     title: "Real-time Analytics",
     description: "View detailed analytics on case progress, outcomes, and performance metrics.",
     icon: BarChart4,
-    color: "from-green-500 to-emerald-400",
   },
   {
     title: "Secure & Compliant",
     description: "Enterprise-grade security with full compliance to legal data protection standards.",
     icon: Shield,
-    color: "from-purple-500 to-indigo-400",
   },
 ];
-
-// Section for benefits
-const benefits = [
-  {
-    title: "Time Efficiency",
-    description: "Reduce administrative overhead by up to 70% with automated workflows and streamlined processes.",
-    icon: Clock,
-  },
-  {
-    title: "Enhanced Accuracy",
-    description: "Minimize errors with structured data entry and validation checks throughout the platform.",
-    icon: CheckCircle2,
-  },
-  {
-    title: "Professional Standards",
-    description: "Maintain highest professional standards with our compliant and secure platform.",
-    icon: Award,
-  },
-  {
-    title: "Complete Documentation",
-    description: "Keep all case information organized and easily accessible in one secure location.",
-    icon: ScrollText,
-  },
-];
-
-// Custom hook for scroll-triggered animations
-const useScrollAnimation = (): [RefObject<HTMLElement>, boolean] => {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
-    };
-  }, []);
-
-  return [ref, isVisible];
-};
-
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2
-    }
-  }
-};
 
 const Index = () => {
-  const [heroRef, heroVisible] = useScrollAnimation();
-  const [statsRef, statsVisible] = useScrollAnimation();
-  const [featuresRef, featuresVisible] = useScrollAnimation();
-  const [benefitsRef, benefitsVisible] = useScrollAnimation();
-  const [ctaRef, ctaVisible] = useScrollAnimation();
-
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Justice Statue Background */}
-      <section ref={heroRef} className="hero-justice min-h-[90vh] flex items-center relative py-16 md:py-24 px-4">
-        <div className="absolute inset-0 bg-gradient-to-r from-court-blue-dark/80 to-court-blue/60 backdrop-blur-sm"></div>
-        <div className="max-w-6xl mx-auto text-center relative z-10">
-          <motion.h1 
-            className="text-4xl md:text-6xl font-bold text-white mb-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={heroVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-court-blue to-court-blue-dark py-16 md:py-24 px-4">
+        <div className="max-w-6xl mx-auto text-center">
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 animate-fadeIn">
             Streamline Your Court Case Management
-          </motion.h1>
-          <motion.p 
-            className="text-lg md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={heroVisible ? { opacity: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-3xl mx-auto animate-fadeIn animation-delay-200">
             The comprehensive platform for managing court cases with efficiency, 
             transparency, and collaboration between clients, lawyers, clerks, and judges.
-          </motion.p>
-          <motion.div 
-            className="flex flex-col sm:flex-row justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={heroVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <Button size="lg" asChild className="button-glow bg-white text-court-blue hover:bg-white/90 transition-transform">
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fadeIn animation-delay-400">
+            <Button size="lg" asChild className="bg-white text-court-blue hover:bg-white/90 hover:scale-105 transition-transform">
               <Link to="/login">Get Started</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-white/10 transition-colors">
-              <a href="#features" className="flex items-center">
-                Learn More <ChevronRight className="ml-1 h-4 w-4" />
-              </a>
+              <a href="#features" className="text-court-blue-light">Learn More</a>
             </Button>
-          </motion.div>
-        </div>
-        
-        {/* Animated scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-          <motion.div 
-            className="w-8 h-12 border-2 border-white rounded-full flex items-start justify-center p-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-          >
-            <motion.div 
-              className="w-1.5 h-3 bg-white rounded-full"
-              animate={{ 
-                y: [0, 10, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: "loop"
-              }}
-            >
-              {/* Empty div for animation */}
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section ref={statsRef} className="py-16 bg-court-gray-dark">
+      <section className="py-12 bg-court-gray-dark">
         <div className="max-w-6xl mx-auto px-4">
-          <motion.div 
-            className="grid grid-cols-2 md:grid-cols-5 gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            animate={statsVisible ? "visible" : "hidden"}
-          >
-            {Object.entries(platformStats).map(([key, value], index) => (
-              <motion.div 
-                key={key}
-                variants={fadeInUp}
-                className="p-6 rounded-lg bg-white shadow-md hover-lift card-hover-effect"
-              >
-                <p className="text-2xl md:text-3xl font-bold text-court-blue">{value}</p>
-                <p className="text-court-blue-dark font-medium text-sm mt-1 capitalize">
-                  {key === "casesResolved" ? "Cases Resolved" : key}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 lg:gap-6 text-center animate-scaleIn">
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.clients}</p>
+              <p className="text-court-blue-dark font-medium text-sm mt-1">Clients</p>
+            </div>
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.lawyers}</p>
+              <p className="text-court-blue-dark font-medium text-sm mt-1">Lawyers</p>
+            </div>
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.judges}</p>
+              <p className="text-court-blue-dark font-medium text-sm mt-1">Judges</p>
+            </div>
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.clerks}</p>
+              <p className="text-court-blue-dark font-medium text-sm mt-1">Clerks</p>
+            </div>
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.casesResolved}</p>
+              <p className="text-court-blue-dark font-medium text-sm mt-1">Cases Resolved</p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Role Features Section - Simplified with just role cards */}
       <section className="py-16 px-4 bg-white" id="login-options">
         <div className="max-w-6xl mx-auto">
-          <motion.h2 
-            className="text-2xl md:text-3xl font-bold text-center mb-4"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
             Login by Role
-          </motion.h2>
+          </h2>
           
-          <motion.p 
-            className="text-center text-muted-foreground max-w-2xl mx-auto mb-12"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            Access your personalized dashboard tailored to your specific role in the legal process
-          </motion.p>
-          
-          <motion.div 
-            className="grid grid-cols-2 md:grid-cols-4 gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Client Box */}
-            <motion.div variants={fadeInUp}>
-              <Card className="hover-lift overflow-hidden border-b-4 border-blue-500">
-                <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                  <div className="feature-icon-container bg-blue-100">
-                    <Users className="h-8 w-8 text-blue-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-center">For Clients</h3>
-                  <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-colors">
-                    <Link to="/login/client">Login</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <Users className="h-8 w-8 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-center">For Clients</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-colors">
+                  <Link to="/login/client">Login</Link>
+                </Button>
+              </CardContent>
+            </Card>
             
             {/* Lawyer Box */}
-            <motion.div variants={fadeInUp}>
-              <Card className="hover-lift overflow-hidden border-b-4 border-green-500">
-                <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                  <div className="feature-icon-container bg-green-100">
-                    <Scale className="h-8 w-8 text-green-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-center">For Lawyers</h3>
-                  <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-colors">
-                    <Link to="/login/lawyer">Login</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <Scale className="h-8 w-8 text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-center">For Lawyers</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-colors">
+                  <Link to="/login/lawyer">Login</Link>
+                </Button>
+              </CardContent>
+            </Card>
             
             {/* Clerk Box */}
-            <motion.div variants={fadeInUp}>
-              <Card className="hover-lift overflow-hidden border-b-4 border-purple-500">
-                <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                  <div className="feature-icon-container bg-purple-100">
-                    <UserCog className="h-8 w-8 text-purple-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-center">For Clerks</h3>
-                  <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-colors">
-                    <Link to="/login/clerk">Login</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <UserCog className="h-8 w-8 text-purple-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-center">For Clerks</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-colors">
+                  <Link to="/login/clerk">Login</Link>
+                </Button>
+              </CardContent>
+            </Card>
             
             {/* Judge Box */}
-            <motion.div variants={fadeInUp}>
-              <Card className="hover-lift overflow-hidden border-b-4 border-red-500">
-                <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                  <div className="feature-icon-container bg-red-100">
-                    <Gavel className="h-8 w-8 text-red-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-center">For Judges</h3>
-                  <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-colors">
-                    <Link to="/login/judge">Login</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </motion.div>
+            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
+                  <Gavel className="h-8 w-8 text-red-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-center">For Judges</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-colors">
+                  <Link to="/login/judge">Login</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section ref={featuresRef} id="features" className="py-16 px-4 bg-court-gray relative overflow-hidden">
+      <section id="features" className="py-16 px-4 bg-court-gray">
         <div className="max-w-6xl mx-auto">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={featuresVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Powerful Features for Court Case Management
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our platform offers comprehensive tools designed to streamline the entire legal process
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            className="grid md:grid-cols-2 gap-8"
-            variants={staggerContainer}
-            initial="hidden"
-            animate={featuresVisible ? "visible" : "hidden"}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+            Powerful Features for Court Case Management
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
             {features.map((feature, index) => (
-              <motion.div 
-                key={index}
-                variants={fadeInUp}
-                className="group bg-white rounded-lg shadow-md p-6 flex hover-lift overflow-hidden"
+              <div 
+                key={index} 
+                className="bg-white rounded-lg shadow-md p-6 flex hover:shadow-lg transition-shadow hover:scale-[1.02] transition-transform"
               >
-                <div className={`mr-4 ${feature.color} p-3 rounded-lg h-fit transition-colors ${feature.hoverColor}`}>
-                  <feature.icon className="h-6 w-6" />
+                <div className="mr-4 bg-court-blue/10 p-3 rounded-lg h-fit">
+                  <feature.icon className="h-6 w-6 text-court-blue" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
-        
-        {/* Animated background elements */}
-        <div className="absolute top-1/4 left-0 w-24 h-24 bg-blue-500/10 rounded-full filter blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-0 w-32 h-32 bg-purple-500/10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </section>
 
-      {/* Benefits Section with new design */}
-      <section ref={benefitsRef} className="py-16 px-4 bg-white">
+      {/* Benefits Section */}
+      <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0 }}
-            animate={benefitsVisible ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Why Choose Our Platform?
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Experience the advantages that make our solution the preferred choice for legal professionals
-            </p>
-          </motion.div>
-          
-          {/* Benefits Cards */}
-          <motion.div 
-            className="grid md:grid-cols-3 gap-8 mb-12"
-            variants={staggerContainer}
-            initial="hidden"
-            animate={benefitsVisible ? "visible" : "hidden"}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+            Why Choose Our Platform?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 mt-12">
             {additionalFeatures.map((feature, index) => (
-              <motion.div 
-                key={index}
-                variants={fadeInUp}
-                className="card-hover-effect rounded-lg overflow-hidden shadow-md"
+              <div 
+                key={index} 
+                className="bg-court-gray rounded-lg shadow-md p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
               >
-                <div className={`bg-gradient-to-r ${feature.color} p-6 h-32 flex items-center justify-center`}>
-                  <feature.icon className="h-16 w-16 text-white" />
+                <div className="flex justify-center mb-4">
+                  <div className="h-16 w-16 rounded-full bg-court-blue-light flex items-center justify-center">
+                    <feature.icon className="h-8 w-8 text-white" />
+                  </div>
                 </div>
-                <div className="bg-white p-6">
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              </motion.div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </div>
             ))}
-          </motion.div>
-          
-          {/* Benefits Grid */}
-          <motion.div 
-            className="grid md:grid-cols-2 gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            animate={benefitsVisible ? "visible" : "hidden"}
-            transition={{ delay: 0.4 }}
-          >
-            {benefits.map((benefit, index) => (
-              <motion.div 
-                key={index}
-                variants={fadeInUp}
-                className="flex items-start p-4 hover:bg-gray-50 rounded-lg transition-colors"
-              >
-                <div className="bg-court-blue/10 p-3 rounded-full mr-4">
-                  <benefit.icon className="h-6 w-6 text-court-blue" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">{benefit.title}</h3>
-                  <p className="text-sm text-muted-foreground">{benefit.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-          
-          <motion.div 
-            className="mt-12 p-6 bg-court-gray rounded-lg"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={benefitsVisible ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            <h3 className="text-xl font-semibold mb-4 text-center">Additional Platform Benefits</h3>
-            <ul className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          </div>
+          <div className="mt-12 text-center">
+            <ul className="inline-grid sm:grid-cols-2 gap-x-12 gap-y-4 text-left mx-auto">
               {[
                 "Intuitive user interface",
                 "24/7 technical support",
@@ -458,70 +228,52 @@ const Index = () => {
                 "Advanced search functionality"
               ].map((item, i) => (
                 <li key={i} className="flex items-center">
-                  <CheckCircle2 className="h-5 w-5 text-court-blue mr-2 flex-shrink-0" />
-                  <span className="text-sm">{item}</span>
+                  <CheckCircle2 className="h-5 w-5 text-court-blue mr-2" />
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Learn More Section */}
-      <section id="how-it-works" className="py-16 px-4 bg-court-gray">
+      <section id="how-it-works" className="py-12 px-4 bg-court-gray">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
             Getting Started with CourtWise
           </h2>
           
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-12">
-            <div className="grid md:grid-cols-3 gap-0">
-              <motion.div 
-                className="bg-blue-50 p-6 border-b md:border-b-0 md:border-r border-blue-100"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-              >
-                <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-bold text-lg mb-4">1</span>
-                <h3 className="font-semibold text-lg mb-3 text-blue-700">Create Your Account</h3>
-                <p className="text-blue-800/70">Sign up with your details as a client, lawyer, or court official. Each role has a tailored experience.</p>
-              </motion.div>
+          <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-blue-50 rounded-lg p-4">
+                <h3 className="font-semibold text-lg mb-2 flex items-center text-blue-700">
+                  <span className="bg-blue-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-blue-700 text-sm">1</span>
+                  Create Your Account
+                </h3>
+                <p className="text-sm">Sign up with your details as a client, lawyer, or court official. Each role has a tailored experience.</p>
+              </div>
               
-              <motion.div 
-                className="bg-green-50 p-6 border-b md:border-b-0 md:border-r border-green-100"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <span className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-600 font-bold text-lg mb-4">2</span>
-                <h3 className="font-semibold text-lg mb-3 text-green-700">Set Up Your Profile</h3>
-                <p className="text-green-800/70">Complete your profile with all necessary details and credentials to make the most of the platform.</p>
-              </motion.div>
+              <div className="bg-green-50 rounded-lg p-4">
+                <h3 className="font-semibold text-lg mb-2 flex items-center text-green-700">
+                  <span className="bg-green-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-green-700 text-sm">2</span>
+                  Set Up Your Profile
+                </h3>
+                <p className="text-sm">Complete your profile with all necessary details and credentials to make the most of the platform.</p>
+              </div>
               
-              <motion.div 
-                className="bg-purple-50 p-6"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <span className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-600 font-bold text-lg mb-4">3</span>
-                <h3 className="font-semibold text-lg mb-3 text-purple-700">Start Using Features</h3>
-                <p className="text-purple-800/70">Explore the dashboard, connect with other users, and utilize the features specific to your role.</p>
-              </motion.div>
+              <div className="bg-purple-50 rounded-lg p-4">
+                <h3 className="font-semibold text-lg mb-2 flex items-center text-purple-700">
+                  <span className="bg-purple-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-purple-700 text-sm">3</span>
+                  Start Using Features
+                </h3>
+                <p className="text-sm">Explore the dashboard, connect with other users, and utilize the features specific to your role.</p>
+              </div>
             </div>
           </div>
           
-          <motion.div 
-            className="bg-white rounded-lg shadow-md p-6 flex items-start"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="bg-blue-100 p-3 rounded-full mr-4 flex-shrink-0">
+          <div className="bg-white rounded-lg shadow-md p-6 flex items-start">
+            <div className="bg-blue-100 p-2 rounded-full mr-4 flex-shrink-0">
               <Info className="h-6 w-6 text-blue-500" />
             </div>
             <div>
@@ -544,10 +296,10 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
           
           <div className="text-center mt-8">
-            <Button size="lg" asChild className="button-glow bg-court-blue hover:bg-court-blue-dark">
+            <Button size="lg" asChild className="bg-court-blue hover:bg-court-blue-dark">
               <Link to="/login">Get Started Now</Link>
             </Button>
           </div>
@@ -555,38 +307,23 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section ref={ctaRef} className="cta-gradient py-16 px-4 text-white">
+      <section className="bg-gradient-to-r from-court-blue-dark to-court-blue py-12 px-4 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.h2 
-            className="text-2xl md:text-3xl font-bold mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={ctaVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">
             Ready to Transform Your Court Case Management?
-          </motion.h2>
-          <motion.p 
-            className="text-white/80 mb-8 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={ctaVisible ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          </h2>
+          <p className="text-white/80 mb-8 max-w-2xl mx-auto">
             Join thousands of legal professionals who use CourtWise to streamline their 
             court case workflows and improve collaboration.
-          </motion.p>
-          <motion.div 
-            className="flex flex-col sm:flex-row justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={ctaVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Button size="lg" asChild className="button-glow bg-white text-court-blue hover:bg-white/90 hover:scale-105 transition-transform">
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button size="lg" asChild className="bg-white text-court-blue hover:bg-white/90 hover:scale-105 transition-transform">
               <Link to="/login">Get Started Today</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-white/10">
               <Link to="/login/signup">Create an Account</Link>
             </Button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -650,7 +387,7 @@ const Index = () => {
           </div>
           
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p>© 2025 CourtWise. All rights reserved.</p>
+            <p>© 2023 CourtWise. All rights reserved.</p>
           </div>
         </div>
       </footer>
