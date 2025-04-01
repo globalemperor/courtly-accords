@@ -1,4 +1,3 @@
-
 // Original user types
 export type UserRole = 'client' | 'lawyer' | 'clerk' | 'judge';
 
@@ -42,6 +41,20 @@ export type CaseStatus =
   | 'dismissed' 
   | 'closed';
 
+export interface Witness {
+  name: string;
+  contactNumber: string;
+  relation: string;
+  statement?: string;
+}
+
+export interface EvidenceItem {
+  title: string;
+  description?: string;
+  type: string;
+  fileUrl?: string;
+}
+
 export interface Case {
   id: string;
   title: string;
@@ -79,6 +92,9 @@ export interface Case {
     name: string;
     role: string;
   }>;
+  // Add new fields for witnesses and evidence
+  witnesses?: Witness[];
+  evidence?: EvidenceItem[];
 }
 
 export interface Message {

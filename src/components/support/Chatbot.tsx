@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +14,20 @@ interface Message {
   timestamp: Date;
 }
 
-export const Chatbot = () => {
+interface KnowledgeBaseItem {
+  question: string[];
+  answer: string[];
+}
+
+interface KnowledgeBase {
+  [key: string]: KnowledgeBaseItem;
+}
+
+interface ChatbotProps {
+  knowledgeBase?: KnowledgeBase;
+}
+
+export const Chatbot: React.FC<ChatbotProps> = ({ knowledgeBase = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -56,7 +68,7 @@ export const Chatbot = () => {
   ];
 
   // Comprehensive knowledge base
-  const knowledgeBase: Record<string, string[]> = {
+  const defaultKnowledgeBase: Record<string, string[]> = {
     // General platform information
     "what is courtwise": [
       "CourtWise is a comprehensive digital platform designed to streamline the court case management process. It connects clients, lawyers, court clerks, and judges in a secure environment, allowing for efficient case filing, document management, communication, and scheduling.",
@@ -314,6 +326,16 @@ export const Chatbot = () => {
     ]
   };
 
+  // Combine provided knowledge base with default knowledge base
+  const combinedKnowledgeBase: Record<string, string[]> = { ...defaultKnowledgeBase };
+  
+  // Add provided knowledge base items if they exist
+  Object.entries(knowledgeBase).forEach(([key, item]) => {
+    if (item.answer && item.answer.length > 0) {
+      combinedKnowledgeBase[key] = item.answer;
+    }
+  });
+
   // More advanced pattern matching for specific query types
   const queryPatterns = [
     { pattern: /how do I (create|make|get) an account/i, key: "create account" },
@@ -336,270 +358,4 @@ export const Chatbot = () => {
 
   // Random response picker
   const getRandomResponse = (responses: string[]) => {
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
-
-  useEffect(() => {
-    // Scroll to bottom when messages change
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-    
-    // Focus input when chat opens
-    if (isOpen && !isMinimized && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [messages, isOpen, isMinimized]);
-
-  const generateResponse = (message: string) => {
-    setIsTyping(true);
-    
-    // Convert input to lowercase for better matching
-    const messageLower = message.toLowerCase();
-    
-    // Simulate a delay for a more natural conversation flow
-    setTimeout(() => {
-      let response = "I don't have specific information about that topic yet. Would you like me to connect you with a support agent for more detailed assistance?";
-      let responseFound = false;
-      
-      // Check for greetings
-      if (/^(hi|hello|hey|greetings|howdy|hi there|good (morning|afternoon|evening))/i.test(messageLower)) {
-        response = getRandomResponse(greetingResponses);
-        responseFound = true;
-      }
-      // Check for questions about the bot
-      else if (/who (are|r) you|what (are|r) you|tell me about you|how (do|does|can) (you|this) (work|help)|what can you (do|help with)/i.test(messageLower)) {
-        response = getRandomResponse(aboutBotResponses);
-        responseFound = true;
-      }
-      // Check for thank you messages
-      else if (/thank you|thanks|thx|ty|appreciate it/i.test(messageLower)) {
-        response = getRandomResponse(thankYouResponses);
-        responseFound = true;
-      }
-      // Check for direct keyword matches in the knowledge base
-      else {
-        for (const [keyword, answers] of Object.entries(knowledgeBase)) {
-          if (messageLower.includes(keyword.toLowerCase())) {
-            response = getRandomResponse(answers);
-            responseFound = true;
-            break;
-          }
-        }
-      }
-      
-      // If no direct match, try pattern matching
-      if (!responseFound) {
-        for (const { pattern, key } of queryPatterns) {
-          if (pattern.test(messageLower) && knowledgeBase[key]) {
-            response = getRandomResponse(knowledgeBase[key]);
-            responseFound = true;
-            break;
-          }
-        }
-      }
-      
-      // Try semantic matching for more complex queries if still no match
-      if (!responseFound) {
-        // Attempt to match based on key terms in various domains
-        if (/case|filing|submit|court|legal|document|hearing|lawyer|attorney|docket|motion|brief|pleading|litigation/i.test(messageLower)) {
-          // Legal process related
-          if (/file|submit|start|initiate|begin|create/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["file case"]);
-          } 
-          else if (/track|status|progress|update|check/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["case status"]);
-          }
-          else if (/document|upload|attach|evidence|exhibit/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["upload documents"]);
-          }
-          else if (/hearing|court date|appearance|trial|proceeding/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["hearing"]);
-          }
-          else if (/lawyer|attorney|counsel|representation|represent/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["find lawyer"]);
-          }
-        }
-        else if (/account|login|password|sign|register|profile|user|email|verification/i.test(messageLower)) {
-          // Account related
-          if (/create|make|register|sign up|join/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["create account"]);
-          }
-          else if (/password|login|sign in|access|can't get in|forgot/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["login issues"]);
-          }
-          else if (/verify|verification|confirm|activate/i.test(messageLower)) {
-            response = getRandomResponse(knowledgeBase["account verification"]);
-          }
-        }
-        else if (/secure|privacy|data|protection|safe|confidential|encrypt/i.test(messageLower)) {
-          // Security related
-          response = getRandomResponse(knowledgeBase["security"]);
-        }
-        else if (/pay|cost|fee|bill|invoice|subscription|charge|refund|money/i.test(messageLower)) {
-          // Payment related
-          response = getRandomResponse(knowledgeBase["billing"]);
-        }
-        else if (/technical|issue|problem|error|bug|doesn't work|not working|fix|browser|mobile|app/i.test(messageLower)) {
-          // Technical issues
-          response = getRandomResponse(knowledgeBase["technical issues"]);
-        }
-      }
-      
-      // Add bot response to messages
-      setMessages(prev => [
-        ...prev,
-        {
-          id: `bot-${Date.now()}`,
-          content: response,
-          sender: "bot",
-          timestamp: new Date(),
-        }
-      ]);
-      
-      setIsTyping(false);
-    }, 800);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!inputValue.trim()) return;
-    
-    // Add user message
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      content: inputValue,
-      sender: "user",
-      timestamp: new Date(),
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue("");
-    
-    // Generate response
-    generateResponse(inputValue);
-  };
-
-  const toggleChat = () => {
-    setIsOpen(prev => !prev);
-    setIsMinimized(false);
-    
-    if (!isOpen) {
-      toast({
-        title: "Support Chat Opened",
-        description: "Our AI assistant is ready to help you.",
-        duration: 3000,
-      });
-    }
-  };
-
-  const toggleMinimize = () => {
-    setIsMinimized(prev => !prev);
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-50">
-      {/* Chat button */}
-      {!isOpen && (
-        <Button
-          onClick={toggleChat}
-          className="h-14 w-14 rounded-full bg-court-blue hover:bg-court-blue-dark shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-105"
-          aria-label="Open support chat"
-        >
-          <MessageCircle className="h-6 w-6" />
-        </Button>
-      )}
-
-      {/* Chat window */}
-      {isOpen && (
-        <Card className={cn(
-          "w-80 md:w-96 shadow-xl transition-all duration-300 transform",
-          isMinimized ? "h-14" : isMobile ? "h-[450px]" : "h-[500px]"
-        )}>
-          <CardHeader className="p-3 bg-court-blue text-white flex flex-row items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Bot className="h-5 w-5" />
-              <CardTitle className="text-sm font-medium">CourtWise Assistant</CardTitle>
-            </div>
-            <div className="flex space-x-1">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-7 w-7 text-white hover:bg-court-blue-dark rounded-full"
-                onClick={toggleMinimize}
-              >
-                {isMinimized ? <Maximize className="h-4 w-4" /> : <Minimize className="h-4 w-4" />}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-7 w-7 text-white hover:bg-court-blue-dark rounded-full"
-                onClick={toggleChat}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          
-          {!isMinimized && (
-            <>
-              <CardContent className={cn("p-3 overflow-y-auto", isMobile ? "h-[340px]" : "h-[390px]")}>
-                <div className="space-y-4">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={cn(
-                        "flex flex-col max-w-[80%] rounded-lg p-3",
-                        message.sender === "user"
-                          ? "bg-court-blue text-white ml-auto"
-                          : "bg-gray-100 text-gray-900"
-                      )}
-                    >
-                      <p className="text-sm">{message.content}</p>
-                      <span className="text-xs opacity-70 mt-1">
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-                  ))}
-                  
-                  {isTyping && (
-                    <div className="flex space-x-1 bg-gray-100 text-gray-900 max-w-[80%] rounded-lg p-3">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
-                    </div>
-                  )}
-                  
-                  <div ref={messagesEndRef} />
-                </div>
-              </CardContent>
-              
-              <CardFooter className="p-3 border-t">
-                <form onSubmit={handleSubmit} className="flex w-full gap-2">
-                  <Input
-                    ref={inputRef}
-                    type="text"
-                    placeholder="Type your message..."
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="flex-1"
-                    disabled={isTyping}
-                  />
-                  <Button 
-                    type="submit" 
-                    size="icon" 
-                    disabled={isTyping || !inputValue.trim()}
-                    className="bg-court-blue hover:bg-court-blue-dark"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </form>
-              </CardFooter>
-            </>
-          )}
-        </Card>
-      )}
-    </div>
-  );
-};
+    return responses[
