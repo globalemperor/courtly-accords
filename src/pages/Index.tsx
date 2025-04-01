@@ -1,5 +1,6 @@
+
 import { Button } from "@/components/ui/button";
-import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, Briefcase, BarChart4, Shield, Info, UserCog } from "lucide-react";
+import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, Briefcase, BarChart4, Shield, Info, UserCog, BookText, Scroll, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -58,9 +59,25 @@ const additionalFeatures = [
 const Index = () => {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-court-blue to-court-blue-dark py-16 md:py-24 px-4">
-        <div className="max-w-6xl mx-auto text-center">
+      {/* Hero Section with Lady Justice Symbol */}
+      <section className="bg-gradient-to-r from-court-blue to-court-blue-dark py-16 md:py-24 px-4 relative overflow-hidden">
+        <div className="absolute right-0 top-0 bottom-0 opacity-15 hidden md:block">
+          <img 
+            src="/lovable-uploads/83985883-a691-4db4-8569-b9d0622fb27a.png" 
+            alt="Lady Justice Statue" 
+            className="h-full object-contain animate-fade-in" 
+          />
+        </div>
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <div className="flex justify-center mb-8 animate-bounce">
+            <div className="h-20 w-20 rounded-full bg-white/10 p-4">
+              <img 
+                src="/lovable-uploads/7333ddb3-a459-4ae8-87e9-af4137dc559e.png" 
+                alt="Lady Justice Symbol" 
+                className="h-full w-full" 
+              />
+            </div>
+          </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 animate-fadeIn">
             Streamline Your Court Case Management
           </h1>
@@ -75,6 +92,19 @@ const Index = () => {
             <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-white/10 transition-colors">
               <a href="#features" className="text-court-blue-light">Learn More</a>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Legal Icons Banner */}
+      <section className="py-6 bg-court-gray-dark">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex justify-center items-center gap-8 overflow-x-auto py-4">
+            <img 
+              src="/lovable-uploads/3fd9b358-1e18-4c0e-ad08-21eaa4fc7662.png" 
+              alt="Legal Symbols" 
+              className="h-16 md:h-20 animate-pulse" 
+            />
           </div>
         </div>
       </section>
@@ -110,8 +140,11 @@ const Index = () => {
       {/* Role Features Section - Simplified with just role cards */}
       <section className="py-16 px-4 bg-white" id="login-options">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Login by Role
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 relative">
+            <span className="relative inline-block">
+              Login by Role
+              <span className="absolute bottom-0 left-0 w-full h-1 bg-court-blue-light transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            </span>
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -233,6 +266,29 @@ const Index = () => {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Legal Icons Section */}
+      <section className="py-8 px-4 bg-court-gray-dark">
+        <div className="max-w-4xl mx-auto flex items-center justify-center gap-8">
+          <div className="flex flex-wrap justify-center gap-6 md:gap-10">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+              <Gavel className="w-10 h-10 text-court-blue" />
+            </div>
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+              <Scale className="w-10 h-10 text-green-600" />
+            </div>
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+              <BookText className="w-10 h-10 text-red-600" />
+            </div>
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+              <Scroll className="w-10 h-10 text-purple-600" />
+            </div>
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+              <Award className="w-10 h-10 text-yellow-600" />
+            </div>
           </div>
         </div>
       </section>
@@ -387,7 +443,7 @@ const Index = () => {
           </div>
           
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p>© 2023 CourtWise. All rights reserved.</p>
+            <p>© 2025 CourtWise. All rights reserved.</p>
           </div>
         </div>
       </footer>
