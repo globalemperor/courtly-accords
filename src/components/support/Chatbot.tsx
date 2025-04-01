@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -358,4 +359,267 @@ export const Chatbot: React.FC<ChatbotProps> = ({ knowledgeBase = {} }) => {
 
   // Random response picker
   const getRandomResponse = (responses: string[]) => {
-    return responses[
+    return responses[Math.floor(Math.random() * responses.length)];
+  };
+
+  // Format answer as bullet points
+  const formatAsPoints = (answer: string) => {
+    if (answer.includes("•")) return answer; // Already in point format
+    
+    // Split the answer into sentences and format as bullet points
+    const sentences = answer.split(/\.\s+/).filter(s => s.trim() !== "");
+    if (sentences.length <= 1) return answer;
+    
+    return sentences.map(s => `• ${s.trim()}`).join("\n");
+  };
+  
+  // Process user query to find a response
+  const processQuery = (query: string): string => {
+    // Normalize query to lowercase
+    const normalizedQuery = query.toLowerCase().trim();
+    
+    // Check for greetings
+    if (/^(hi|hello|hey|greetings|what's up).{0,10}$/i.test(normalizedQuery)) {
+      return getRandomResponse(greetingResponses);
+    }
+    
+    // Check for questions about the bot
+    if (/who are you|what are you|tell me about yourself|what is your name/i.test(normalizedQuery)) {
+      return getRandomResponse(aboutBotResponses);
+    }
+    
+    // Check for thank you messages
+    if (/thank you|thanks|appreciate it|thank/i.test(normalizedQuery)) {
+      return getRandomResponse(thankYouResponses);
+    }
+    
+    // Try pattern matching first
+    for (const { pattern, key } of queryPatterns) {
+      if (pattern.test(normalizedQuery)) {
+        const answers = combinedKnowledgeBase[key];
+        if (answers && answers.length > 0) {
+          const answer = getRandomResponse(answers);
+          return formatAsPoints(answer);
+        }
+      }
+    }
+    
+    // Try direct keyword matching
+    for (const [key, answers] of Object.entries(combinedKnowledgeBase)) {
+      if (
+        normalizedQuery.includes(key) || 
+        key.split(" ").every(word => normalizedQuery.includes(word))
+      ) {
+        const answer = getRandomResponse(answers);
+        return formatAsPoints(answer);
+      }
+    }
+    
+    // Try matching individual words if the query is complex
+    if (normalizedQuery.split(" ").length > 2) {
+      const queryWords = normalizedQuery.split(" ");
+      for (const [key, answers] of Object.entries(combinedKnowledgeBase)) {
+        const keyWords = key.split(" ");
+        const matchCount = keyWords.filter(word => queryWords.includes(word)).length;
+        
+        // If more than half the words match, consider it a potential match
+        if (matchCount >= Math.min(2, Math.floor(keyWords.length / 2))) {
+          const answer = getRandomResponse(answers);
+          return formatAsPoints(answer);
+        }
+      }
+    }
+    
+    // If provided knowledgeBase has specific question arrays, check those
+    for (const [_, item] of Object.entries(knowledgeBase)) {
+      if (item.question && item.question.length > 0) {
+        for (const q of item.question) {
+          if (normalizedQuery.includes(q) || 
+              q.split(" ").every(word => normalizedQuery.includes(word))) {
+            const answer = getRandomResponse(item.answer);
+            return formatAsPoints(answer);
+          }
+        }
+      }
+    }
+    
+    // No match found
+    return "I don't have specific information about that. Could you rephrase your question or ask about another topic related to CourtWise or legal processes?";
+  };
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  // Focus input when chatbot is opened
+  useEffect(() => {
+    if (isOpen && !isMinimized && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen, isMinimized]);
+
+  const handleSend = () => {
+    if (!inputValue.trim()) return;
+    
+    // Add user message
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      content: inputValue,
+      sender: "user",
+      timestamp: new Date(),
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue("");
+    setIsTyping(true);
+    
+    // Simulate typing delay for bot response
+    setTimeout(() => {
+      const botMessage: Message = {
+        id: `bot-${Date.now()}`,
+        content: processQuery(userMessage.content),
+        sender: "bot",
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
+    }, 1000);
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
+  };
+
+  const toggleChatbot = () => {
+    if (!isOpen) {
+      setIsOpen(true);
+      setIsMinimized(false);
+    } else {
+      setIsOpen(false);
+    }
+  };
+
+  const minimizeChatbot = () => {
+    setIsMinimized(true);
+  };
+
+  const maximizeChatbot = () => {
+    setIsMinimized(false);
+  };
+
+  return (
+    <div className="fixed bottom-4 right-4 z-50">
+      {/* Chatbot toggle button */}
+      {!isOpen && (
+        <Button
+          onClick={toggleChatbot}
+          className="rounded-full w-12 h-12 bg-primary shadow-md hover:shadow-lg"
+        >
+          <MessageCircle className="w-6 h-6" />
+        </Button>
+      )}
+      
+      {/* Chatbot interface */}
+      {isOpen && (
+        <Card 
+          className={cn(
+            "flex flex-col w-80 md:w-96 shadow-lg transition-all duration-300 ease-in-out",
+            isMinimized ? "h-14" : "h-[450px]"
+          )}
+        >
+          {/* Header */}
+          <CardHeader className="p-3 flex flex-row items-center justify-between bg-primary text-primary-foreground rounded-t-lg">
+            <div className="flex items-center">
+              <Bot className="w-5 h-5 mr-2" />
+              <CardTitle className="text-sm font-medium">CourtWise Assistant</CardTitle>
+            </div>
+            <div className="flex space-x-1">
+              {isMinimized ? (
+                <Button variant="ghost" size="icon" onClick={maximizeChatbot} className="h-7 w-7">
+                  <Maximize className="h-4 w-4 text-primary-foreground" />
+                </Button>
+              ) : (
+                <Button variant="ghost" size="icon" onClick={minimizeChatbot} className="h-7 w-7">
+                  <Minimize className="h-4 w-4 text-primary-foreground" />
+                </Button>
+              )}
+              <Button variant="ghost" size="icon" onClick={toggleChatbot} className="h-7 w-7">
+                <X className="h-4 w-4 text-primary-foreground" />
+              </Button>
+            </div>
+          </CardHeader>
+          
+          {/* Messages */}
+          {!isMinimized && (
+            <CardContent className="flex-grow overflow-y-auto p-3">
+              <div className="space-y-3">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "flex flex-col max-w-[80%] rounded-lg p-3",
+                      message.sender === "user"
+                        ? "ml-auto bg-primary text-primary-foreground"
+                        : "bg-muted"
+                    )}
+                  >
+                    <div className="whitespace-pre-line">{message.content}</div>
+                    <div
+                      className={cn(
+                        "text-xs mt-1",
+                        message.sender === "user" 
+                          ? "text-primary-foreground/70" 
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                  </div>
+                ))}
+                {isTyping && (
+                  <div className="flex max-w-[80%] rounded-lg p-3 bg-muted">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 rounded-full bg-primary animate-bounce"></div>
+                      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </CardContent>
+          )}
+          
+          {/* Input */}
+          {!isMinimized && (
+            <CardFooter className="p-3 border-t">
+              <div className="flex w-full space-x-2">
+                <Input
+                  ref={inputRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleInputKeyDown}
+                  placeholder="Type your message..."
+                  className="flex-1"
+                />
+                <Button 
+                  onClick={handleSend} 
+                  size="icon" 
+                  disabled={!inputValue.trim() || isTyping}
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardFooter>
+          )}
+        </Card>
+      )}
+    </div>
+  );
+};
