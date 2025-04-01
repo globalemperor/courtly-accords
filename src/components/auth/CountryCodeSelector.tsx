@@ -15,8 +15,22 @@ interface CountryCodeSelectorProps {
 export const CountryCodeSelector = ({ value, onChange, onCountryChange }: CountryCodeSelectorProps) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState<any>(countries.find(country => country.dial_code === value) || countries[0]);
+  
+  // Find India in the countries array and set it as the default
+  const defaultCountry = countries.find(country => country.code === "IN") || countries.find(country => country.dial_code === value) || countries[0];
+  const [selectedCountry, setSelectedCountry] = useState<any>(defaultCountry);
+  
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Set India as default on component mount if no value is provided
+    if (!value && defaultCountry) {
+      onChange(defaultCountry.dial_code);
+      if (onCountryChange) {
+        onCountryChange(defaultCountry);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (open && searchInputRef.current) {
