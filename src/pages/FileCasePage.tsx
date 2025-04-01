@@ -15,6 +15,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Trash2, Upload, FilePlus, UserPlus } from "lucide-react";
+import { Witness, EvidenceItem } from "@/types";
 
 // Government ID types
 const GOV_ID_TYPES = [
@@ -140,6 +141,21 @@ const FileCasePage = () => {
         idNumber: data.defendant.govIdNumber
       };
 
+      // Create properly typed witnesses and evidence arrays
+      const witnesses: Witness[] = (data.witnesses || []).map(w => ({
+        name: w.name,
+        contactNumber: w.contactNumber,
+        relation: w.relation,
+        statement: w.statement || ''
+      }));
+
+      const evidence: EvidenceItem[] = (data.evidence || []).map(e => ({
+        title: e.title,
+        type: e.type,
+        description: e.description || '',
+        fileUrl: e.fileUrl || ''
+      }));
+
       // Create the case with the additional witness and evidence data
       const newCase = await createCase({
         title: data.title,
@@ -149,8 +165,8 @@ const FileCasePage = () => {
         clientId: user.id,
         filedDate: new Date().toISOString(),
         defendantInfo,
-        witnesses: data.witnesses || [],
-        evidence: data.evidence || []
+        witnesses,
+        evidence
       });
 
       toast({
