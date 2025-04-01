@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { motion } from "./motion";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, RefObject } from "react";
 
 // Mock stats for the platform
 const platformStats = {
@@ -95,9 +95,9 @@ const benefits = [
 ];
 
 // Custom hook for scroll-triggered animations
-const useScrollAnimation = () => {
+const useScrollAnimation = (): [RefObject<HTMLElement>, boolean] => {
   const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -205,7 +205,9 @@ const Index = () => {
                 repeat: Infinity,
                 repeatType: "loop"
               }}
-            />
+            >
+              {/* Empty div for animation */}
+            </motion.div>
           </motion.div>
         </div>
       </section>

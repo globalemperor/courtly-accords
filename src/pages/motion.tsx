@@ -12,7 +12,7 @@ type Variants = {
 
 // Define types for animation props
 interface MotionProps {
-  children: ReactNode;
+  children?: ReactNode; // Make children optional
   initial?: any;
   animate?: any;
   whileInView?: any;
