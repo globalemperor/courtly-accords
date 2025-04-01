@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -106,7 +105,7 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
       email: "",
       password: "",
       confirmPassword: "",
-      countryCode: "+91", // Set India's country code as default
+      countryCode: "+1",
       phoneNumber: "",
       idType: "",
       idNumber: "",
