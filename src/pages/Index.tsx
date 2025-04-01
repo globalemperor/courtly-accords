@@ -69,8 +69,8 @@ const Index = () => {
           />
         </div>
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <div className="flex justify-center mb-8 animate-bounce">
-            <div className="h-20 w-20 rounded-full bg-white/10 p-4">
+          <div className="flex justify-center mb-8">
+            <div className="h-20 w-20 rounded-full bg-white/10 p-4 animate-pulse-subtle">
               <img 
                 src="/lovable-uploads/7333ddb3-a459-4ae8-87e9-af4137dc559e.png" 
                 alt="Lady Justice Symbol" 
@@ -96,40 +96,40 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Legal Icons Banner */}
+      {/* Legal Icons Banner - Updated with subtle fade effect instead of bouncing */}
       <section className="py-6 bg-court-gray-dark">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-center items-center gap-8 overflow-x-auto py-4">
             <img 
               src="/lovable-uploads/3fd9b358-1e18-4c0e-ad08-21eaa4fc7662.png" 
               alt="Legal Symbols" 
-              className="h-16 md:h-20 animate-pulse" 
+              className="h-16 md:h-20 animate-fade-in" 
             />
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section - Enhanced with hover effects */}
       <section className="py-12 bg-court-gray-dark">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 lg:gap-6 text-center animate-scaleIn">
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-blue-50">
               <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.clients}</p>
               <p className="text-court-blue-dark font-medium text-sm mt-1">Clients</p>
             </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-green-50">
               <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.lawyers}</p>
               <p className="text-court-blue-dark font-medium text-sm mt-1">Lawyers</p>
             </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-yellow-50">
               <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.judges}</p>
               <p className="text-court-blue-dark font-medium text-sm mt-1">Judges</p>
             </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-purple-50">
               <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.clerks}</p>
               <p className="text-court-blue-dark font-medium text-sm mt-1">Clerks</p>
             </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:bg-red-50">
               <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.casesResolved}</p>
               <p className="text-court-blue-dark font-medium text-sm mt-1">Cases Resolved</p>
             </div>
@@ -137,64 +137,63 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Role Features Section - Simplified with just role cards */}
+      {/* Role Features Section - Enhanced with interactive animations */}
       <section className="py-16 px-4 bg-white" id="login-options">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 relative">
-            <span className="relative inline-block">
+            <span className="relative inline-block after:content-[''] after:absolute after:w-full after:h-1 after:bg-court-blue-light after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left">
               Login by Role
-              <span className="absolute bottom-0 left-0 w-full h-1 bg-court-blue-light transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
             </span>
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Client Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <Users className="h-8 w-8 text-blue-500" />
+                <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors duration-300">
+                  <Users className="h-8 w-8 text-blue-500 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Clients</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center group-hover:text-blue-600 transition-colors">For Clients</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-all duration-300">
                   <Link to="/login/client">Login</Link>
                 </Button>
               </CardContent>
             </Card>
             
             {/* Lawyer Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <Scale className="h-8 w-8 text-green-500" />
+                <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors duration-300">
+                  <Scale className="h-8 w-8 text-green-500 group-hover:text-green-600 group-hover:scale-110 transition-all duration-300" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Lawyers</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center group-hover:text-green-600 transition-colors">For Lawyers</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-all duration-300">
                   <Link to="/login/lawyer">Login</Link>
                 </Button>
               </CardContent>
             </Card>
             
             {/* Clerk Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <UserCog className="h-8 w-8 text-purple-500" />
+                <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors duration-300">
+                  <UserCog className="h-8 w-8 text-purple-500 group-hover:text-purple-600 group-hover:scale-110 transition-all duration-300" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Clerks</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center group-hover:text-purple-600 transition-colors">For Clerks</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-all duration-300">
                   <Link to="/login/clerk">Login</Link>
                 </Button>
               </CardContent>
             </Card>
             
             {/* Judge Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="hover:shadow-lg transition-all duration-500 hover:-translate-y-2 group">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <Gavel className="h-8 w-8 text-red-500" />
+                <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors duration-300">
+                  <Gavel className="h-8 w-8 text-red-500 group-hover:text-red-600 group-hover:scale-110 transition-all duration-300" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Judges</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center group-hover:text-red-600 transition-colors">For Judges</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-all duration-300">
                   <Link to="/login/judge">Login</Link>
                 </Button>
               </CardContent>
@@ -203,23 +202,25 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features Section - Enhanced with hover animations */}
       <section id="features" className="py-16 px-4 bg-court-gray">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Powerful Features for Court Case Management
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 relative">
+            <span className="relative inline-block after:content-[''] after:absolute after:w-full after:h-1 after:bg-court-blue-light after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left">
+              Powerful Features for Court Case Management
+            </span>
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             {features.map((feature, index) => (
               <div 
                 key={index} 
-                className="bg-white rounded-lg shadow-md p-6 flex hover:shadow-lg transition-shadow hover:scale-[1.02] transition-transform"
+                className="bg-white rounded-lg shadow-md p-6 flex hover:shadow-lg transition-all duration-300 hover:scale-[1.03] group"
               >
-                <div className="mr-4 bg-court-blue/10 p-3 rounded-lg h-fit">
-                  <feature.icon className="h-6 w-6 text-court-blue" />
+                <div className="mr-4 bg-court-blue/10 p-3 rounded-lg h-fit group-hover:bg-court-blue/20 transition-colors">
+                  <feature.icon className="h-6 w-6 text-court-blue group-hover:text-court-blue-dark group-hover:scale-110 transition-all" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-court-blue transition-colors">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </div>
               </div>
@@ -228,24 +229,27 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Benefits Section - Enhanced with staggered animations */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-            Why Choose Our Platform?
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 relative">
+            <span className="relative inline-block after:content-[''] after:absolute after:w-full after:h-1 after:bg-court-blue-light after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left">
+              Why Choose Our Platform?
+            </span>
           </h2>
           <div className="grid md:grid-cols-3 gap-6 mt-12">
             {additionalFeatures.map((feature, index) => (
               <div 
                 key={index} 
-                className="bg-court-gray rounded-lg shadow-md p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                className={`bg-court-gray rounded-lg shadow-md p-6 text-center hover:shadow-xl transition-all duration-500 hover:-translate-y-3 animate-fadeIn group`}
+                style={{ animationDelay: `${index * 200}ms` }}
               >
                 <div className="flex justify-center mb-4">
-                  <div className="h-16 w-16 rounded-full bg-court-blue-light flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-court-blue-light flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-court-blue transition-colors">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>
               </div>
             ))}
@@ -260,7 +264,7 @@ const Index = () => {
                 "Data export capabilities",
                 "Advanced search functionality"
               ].map((item, i) => (
-                <li key={i} className="flex items-center">
+                <li key={i} className="flex items-center animate-slideInFromRight" style={{ animationDelay: `${i * 150}ms` }}>
                   <CheckCircle2 className="h-5 w-5 text-court-blue mr-2" />
                   <span>{item}</span>
                 </li>
@@ -270,39 +274,41 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Legal Icons Section */}
+      {/* Legal Icons Section - Enhanced with hover effects */}
       <section className="py-8 px-4 bg-court-gray-dark">
         <div className="max-w-4xl mx-auto flex items-center justify-center gap-8">
           <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300">
               <Gavel className="w-10 h-10 text-court-blue" />
             </div>
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300">
               <Scale className="w-10 h-10 text-green-600" />
             </div>
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300">
               <BookText className="w-10 h-10 text-red-600" />
             </div>
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300">
               <Scroll className="w-10 h-10 text-purple-600" />
             </div>
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-4 flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300">
               <Award className="w-10 h-10 text-yellow-600" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Learn More Section */}
+      {/* Learn More Section - Enhanced with animations and hover effects */}
       <section id="how-it-works" className="py-12 px-4 bg-court-gray">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-            Getting Started with CourtWise
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 relative">
+            <span className="relative inline-block after:content-[''] after:absolute after:w-full after:h-1 after:bg-court-blue-light after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left">
+              Getting Started with CourtWise
+            </span>
           </h2>
           
-          <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-md mb-8 hover:shadow-lg transition-shadow duration-300">
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-blue-50 rounded-lg p-4">
+              <div className="bg-blue-50 rounded-lg p-4 hover:bg-blue-100 transition-colors duration-300 transform hover:scale-105">
                 <h3 className="font-semibold text-lg mb-2 flex items-center text-blue-700">
                   <span className="bg-blue-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-blue-700 text-sm">1</span>
                   Create Your Account
@@ -310,7 +316,7 @@ const Index = () => {
                 <p className="text-sm">Sign up with your details as a client, lawyer, or court official. Each role has a tailored experience.</p>
               </div>
               
-              <div className="bg-green-50 rounded-lg p-4">
+              <div className="bg-green-50 rounded-lg p-4 hover:bg-green-100 transition-colors duration-300 transform hover:scale-105">
                 <h3 className="font-semibold text-lg mb-2 flex items-center text-green-700">
                   <span className="bg-green-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-green-700 text-sm">2</span>
                   Set Up Your Profile
@@ -318,7 +324,7 @@ const Index = () => {
                 <p className="text-sm">Complete your profile with all necessary details and credentials to make the most of the platform.</p>
               </div>
               
-              <div className="bg-purple-50 rounded-lg p-4">
+              <div className="bg-purple-50 rounded-lg p-4 hover:bg-purple-100 transition-colors duration-300 transform hover:scale-105">
                 <h3 className="font-semibold text-lg mb-2 flex items-center text-purple-700">
                   <span className="bg-purple-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-purple-700 text-sm">3</span>
                   Start Using Features
@@ -328,7 +334,7 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-6 flex items-start">
+          <div className="bg-white rounded-lg shadow-md p-6 flex items-start hover:shadow-lg transition-shadow duration-300">
             <div className="bg-blue-100 p-2 rounded-full mr-4 flex-shrink-0">
               <Info className="h-6 w-6 text-blue-500" />
             </div>
@@ -338,16 +344,16 @@ const Index = () => {
                 Our support team is available to help you get the most out of CourtWise.
               </p>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" size="sm" asChild className="text-xs">
+                <Button variant="outline" size="sm" asChild className="text-xs hover:bg-blue-50 transition-colors">
                   <Link to="/documentation">Documentation</Link>
                 </Button>
-                <Button variant="outline" size="sm" asChild className="text-xs">
+                <Button variant="outline" size="sm" asChild className="text-xs hover:bg-blue-50 transition-colors">
                   <Link to="/guides">Tutorials</Link>
                 </Button>
-                <Button variant="outline" size="sm" asChild className="text-xs">
+                <Button variant="outline" size="sm" asChild className="text-xs hover:bg-blue-50 transition-colors">
                   <Link to="/faq">FAQ</Link>
                 </Button>
-                <Button variant="outline" size="sm" asChild className="text-xs">
+                <Button variant="outline" size="sm" asChild className="text-xs hover:bg-blue-50 transition-colors">
                   <Link to="/help">Contact Support</Link>
                 </Button>
               </div>
@@ -355,35 +361,36 @@ const Index = () => {
           </div>
           
           <div className="text-center mt-8">
-            <Button size="lg" asChild className="bg-court-blue hover:bg-court-blue-dark">
+            <Button size="lg" asChild className="bg-court-blue hover:bg-court-blue-dark hover:scale-105 transition-transform duration-300">
               <Link to="/login">Get Started Now</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-court-blue-dark to-court-blue py-12 px-4 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+      {/* CTA Section - Improved with gradient animation */}
+      <section className="bg-gradient-to-r from-court-blue-dark to-court-blue py-12 px-4 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSgzMCkiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0PjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSI+PC9yZWN0Pjwvc3ZnPg==')]"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 animate-fade-in">
             Ready to Transform Your Court Case Management?
           </h2>
-          <p className="text-white/80 mb-8 max-w-2xl mx-auto">
+          <p className="text-white/80 mb-8 max-w-2xl mx-auto animate-fade-in animation-delay-200">
             Join thousands of legal professionals who use CourtWise to streamline their 
             court case workflows and improve collaboration.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" asChild className="bg-white text-court-blue hover:bg-white/90 hover:scale-105 transition-transform">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in animation-delay-400">
+            <Button size="lg" asChild className="bg-white text-court-blue hover:bg-white/90 hover:scale-105 transition-all duration-300">
               <Link to="/login">Get Started Today</Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-white/10">
+            <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-white/10 transition-colors duration-300">
               <Link to="/login/signup">Create an Account</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer - Year is already updated to 2025 */}
       <footer className="bg-court-blue-dark text-white/80 py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
@@ -414,30 +421,30 @@ const Index = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-white">Quick Links</h3>
               <ul className="space-y-2">
-                <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-                <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
-                <li><Link to="/how-it-works" className="hover:text-white transition-colors">How It Works</Link></li>
-                <li><Link to="/login" className="hover:text-white transition-colors">Sign In</Link></li>
+                <li><Link to="/" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Home</Link></li>
+                <li><Link to="/features" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Features</Link></li>
+                <li><Link to="/how-it-works" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">How It Works</Link></li>
+                <li><Link to="/login" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Sign In</Link></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-lg font-semibold mb-4 text-white">Resources</h3>
               <ul className="space-y-2">
-                <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li><Link to="/documentation" className="hover:text-white transition-colors">Documentation</Link></li>
-                <li><Link to="/guides" className="hover:text-white transition-colors">User Guides</Link></li>
-                <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link to="/help" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Help Center</Link></li>
+                <li><Link to="/documentation" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Documentation</Link></li>
+                <li><Link to="/guides" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">User Guides</Link></li>
+                <li><Link to="/faq" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">FAQ</Link></li>
               </ul>
             </div>
             
             <div>
               <h3 className="text-lg font-semibold mb-4 text-white">Legal</h3>
               <ul className="space-y-2">
-                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-                <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/cookies" className="hover:text-white transition-colors">Cookie Policy</Link></li>
-                <li><Link to="/gdpr" className="hover:text-white transition-colors">GDPR Compliance</Link></li>
+                <li><Link to="/terms" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Terms of Service</Link></li>
+                <li><Link to="/privacy" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Privacy Policy</Link></li>
+                <li><Link to="/cookies" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">Cookie Policy</Link></li>
+                <li><Link to="/gdpr" className="hover:text-white transition-colors relative inline-block after:content-[''] after:absolute after:w-full after:h-0.5 after:bg-white/50 after:bottom-0 after:left-0 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">GDPR Compliance</Link></li>
               </ul>
             </div>
           </div>
