@@ -400,21 +400,23 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
         </div>
       </div>
 
-      <TabsContent value="day" className="mt-0">
-        {renderDayView()}
-      </TabsContent>
-      
-      <TabsContent value="week" className="mt-0">
-        {renderWeekView()}
-      </TabsContent>
-      
-      <TabsContent value="month" className="mt-0">
-        {renderMonthView()}
-      </TabsContent>
-      
-      <TabsContent value="custom" className="mt-0">
-        {renderCustomView()}
-      </TabsContent>
+      <Tabs value={view} onValueChange={(value) => setView(value as CalendarView)}>
+        <TabsContent value="day" className="mt-0">
+          {renderDayView()}
+        </TabsContent>
+        
+        <TabsContent value="week" className="mt-0">
+          {renderWeekView()}
+        </TabsContent>
+        
+        <TabsContent value="month" className="mt-0">
+          {renderMonthView()}
+        </TabsContent>
+        
+        <TabsContent value="custom" className="mt-0">
+          {renderCustomView()}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
