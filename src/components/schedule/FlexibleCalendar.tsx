@@ -1,440 +1,420 @@
 
-import { useState } from "react";
-import { addDays, format, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks } from "date-fns";
+import { useState, useEffect } from "react";
+import { addDays, format, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, parseISO } from "date-fns";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Hearing } from "@/types";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { useData } from "@/context/DataContext";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { useHearingNotifications } from "@/services/HearingNotificationService";
+
+interface FlexibleCalendarProps {
+  viewMode: "day" | "week" | "month" | "custom";
+}
 
 type CalendarView = "day" | "week" | "month" | "custom";
 
-export const FlexibleCalendar = () => {
-  const { hearings, cases } = useData();
-  const [view, setView] = useState<CalendarView>("week");
+export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { cases, hearings: allHearings, addHearing, updateHearing } = useData();
+  const hearingNotifications = useHearingNotifications();
+  
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [customRange, setCustomRange] = useState({
-    from: new Date(),
-    to: addDays(new Date(), 7),
+  const [view, setView] = useState<CalendarView>(viewMode);
+  const [customRange, setCustomRange] = useState<{ start: string; end: string }>({
+    start: format(new Date(), 'yyyy-MM-dd'),
+    end: format(addDays(new Date(), 7), 'yyyy-MM-dd')
   });
-
-  // Find case title by caseId
-  const getCaseTitle = (caseId: string) => {
-    const foundCase = cases.find((c) => c.id === caseId);
-    return foundCase?.title || `Case #${caseId}`;
+  
+  // Filter hearings based on user role and ID
+  const filteredHearings = allHearings.filter(hearing => {
+    if (!user) return false;
+    
+    // If user is a judge, show all hearings they are presiding over
+    if (user.role === 'judge') {
+      const relatedCase = cases.find(c => c.id === hearing.caseId);
+      return relatedCase?.judgeName === user.name || relatedCase?.judgeId === user.id;
+    }
+    
+    // If user is a lawyer, show hearings for their cases
+    if (user.role === 'lawyer') {
+      const relatedCase = cases.find(c => c.id === hearing.caseId);
+      return relatedCase?.lawyerId === user.id;
+    }
+    
+    // If user is a client, show hearings for their cases
+    if (user.role === 'client') {
+      const relatedCase = cases.find(c => c.id === hearing.caseId);
+      return relatedCase?.clientId === user.id;
+    }
+    
+    // If user is a clerk, show all hearings
+    if (user.role === 'clerk') {
+      return true;
+    }
+    
+    return false;
+  });
+  
+  // Set up hearing notifications
+  useEffect(() => {
+    hearingNotifications.startNotificationService(filteredHearings, user);
+    
+    return () => {
+      hearingNotifications.stopNotificationService();
+    };
+  }, [filteredHearings, user]);
+  
+  // Update view mode when prop changes
+  useEffect(() => {
+    setView(viewMode);
+  }, [viewMode]);
+  
+  // Get days for the current view
+  const getDaysForView = () => {
+    switch (view) {
+      case 'day':
+        return [currentDate];
+      case 'week':
+        const start = startOfWeek(currentDate, { weekStartsOn: 1 });
+        return Array.from({ length: 7 }, (_, i) => addDays(start, i));
+      case 'month':
+        const monthStart = startOfMonth(currentDate);
+        const monthEnd = endOfMonth(currentDate);
+        return eachDayOfInterval({ start: monthStart, end: monthEnd });
+      case 'custom':
+        try {
+          const startDate = parseISO(customRange.start);
+          const endDate = parseISO(customRange.end);
+          if (startDate > endDate) return [currentDate];
+          return eachDayOfInterval({ start: startDate, end: endDate });
+        } catch (e) {
+          return [currentDate];
+        }
+      default:
+        return [currentDate];
+    }
   };
 
-  // Helper to group hearings by date
-  const groupHearingsByDate = (hearings: Hearing[]) => {
-    const grouped: Record<string, Hearing[]> = {};
-    
-    hearings.forEach((hearing) => {
-      const date = hearing.date;
-      if (!grouped[date]) {
-        grouped[date] = [];
-      }
-      grouped[date].push(hearing);
+  // Get hearings for a specific day
+  const getHearingsForDay = (day: Date) => {
+    return filteredHearings.filter(hearing => {
+      const hearingDate = new Date(hearing.date);
+      return isSameDay(hearingDate, day);
     });
-    
-    return grouped;
   };
 
-  // Get hearings for the current view
-  const getFilteredHearings = () => {
-    if (view === "day") {
-      const dateString = format(currentDate, "yyyy-MM-dd");
-      return hearings.filter((h) => h.date === dateString);
-    }
-    
-    if (view === "week") {
-      const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-      const weekEnd = addDays(weekStart, 6);
-      return hearings.filter((h) => {
-        const hearingDate = new Date(h.date);
-        return hearingDate >= weekStart && hearingDate <= weekEnd;
-      });
-    }
-    
-    if (view === "month") {
-      const monthStart = startOfMonth(currentDate);
-      const monthEnd = endOfMonth(currentDate);
-      return hearings.filter((h) => {
-        const hearingDate = new Date(h.date);
-        return hearingDate >= monthStart && hearingDate <= monthEnd;
-      });
-    }
-    
-    if (view === "custom") {
-      return hearings.filter((h) => {
-        const hearingDate = new Date(h.date);
-        return hearingDate >= customRange.from && hearingDate <= customRange.to;
-      });
-    }
-    
-    return [];
-  };
-
-  const filteredHearings = getFilteredHearings();
-  const groupedHearings = groupHearingsByDate(filteredHearings);
-
-  // Navigation handlers
-  const handlePrevious = () => {
-    if (view === "day") {
-      setCurrentDate(addDays(currentDate, -1));
-    } else if (view === "week") {
-      setCurrentDate(subWeeks(currentDate, 1));
-    } else if (view === "month") {
-      setCurrentDate(subMonths(currentDate, 1));
+  // Navigation functions
+  const navigatePrevious = () => {
+    switch (view) {
+      case 'day':
+        setCurrentDate(prev => addDays(prev, -1));
+        break;
+      case 'week':
+        setCurrentDate(prev => subWeeks(prev, 1));
+        break;
+      case 'month':
+        setCurrentDate(prev => subMonths(prev, 1));
+        break;
+      case 'custom':
+        // No navigation for custom view
+        break;
     }
   };
 
-  const handleNext = () => {
-    if (view === "day") {
-      setCurrentDate(addDays(currentDate, 1));
-    } else if (view === "week") {
-      setCurrentDate(addWeeks(currentDate, 1));
-    } else if (view === "month") {
-      setCurrentDate(addMonths(currentDate, 1));
+  const navigateNext = () => {
+    switch (view) {
+      case 'day':
+        setCurrentDate(prev => addDays(prev, 1));
+        break;
+      case 'week':
+        setCurrentDate(prev => addWeeks(prev, 1));
+        break;
+      case 'month':
+        setCurrentDate(prev => addMonths(prev, 1));
+        break;
+      case 'custom':
+        // No navigation for custom view
+        break;
     }
   };
 
-  // Render date range title
-  const renderDateRangeTitle = () => {
-    if (view === "day") {
-      return format(currentDate, "MMMM d, yyyy");
-    } else if (view === "week") {
-      const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-      const weekEnd = addDays(weekStart, 6);
-      return `${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d, yyyy")}`;
-    } else if (view === "month") {
-      return format(currentDate, "MMMM yyyy");
-    } else if (view === "custom") {
-      return `${format(customRange.from, "MMM d")} - ${format(customRange.to, "MMM d, yyyy")}`;
-    }
-    return "";
+  const navigateToday = () => {
+    setCurrentDate(new Date());
   };
 
-  // Render day cells for month view
-  const renderMonthView = () => {
-    const monthStart = startOfMonth(currentDate);
-    const monthEnd = endOfMonth(currentDate);
-    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
-    const endDate = addDays(startOfWeek(monthEnd, { weekStartsOn: 1 }), 34); // Ensure we have 5 weeks (35 days)
-    
-    const days = eachDayOfInterval({ start: startDate, end: endDate });
-    
+  const renderDateCell = (day: Date) => {
+    const dayHearings = getHearingsForDay(day);
+    const isCurrentMonth = view === 'month' ? isSameMonth(day, currentDate) : true;
+    const isToday = isSameDay(day, new Date());
+
     return (
-      <div className="grid grid-cols-7 gap-1">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="text-center font-medium text-sm py-2">
-            {day}
-          </div>
-        ))}
-        
-        {days.map((day) => {
-          const dateString = format(day, "yyyy-MM-dd");
-          const dayHearings = groupedHearings[dateString] || [];
-          const isCurrentMonth = isSameMonth(day, currentDate);
-          const isToday = isSameDay(day, new Date());
-          
-          return (
-            <div
-              key={day.toString()}
-              className={cn(
-                "min-h-24 p-1 border border-border rounded-md",
-                !isCurrentMonth && "opacity-40 bg-muted/30",
-                isToday && "bg-muted"
-              )}
-            >
-              <div className="text-right text-xs font-medium p-1">
-                {format(day, "d")}
-              </div>
-              <div className="space-y-1">
-                {dayHearings.slice(0, 3).map((hearing) => (
-                  <div
-                    key={hearing.id}
-                    className="bg-primary/10 text-xs p-1 rounded truncate"
-                    title={getCaseTitle(hearing.caseId)}
+      <div
+        key={day.toString()}
+        className={`border p-2 ${
+          isCurrentMonth ? '' : 'bg-muted/30 text-muted-foreground'
+        } ${isToday ? 'bg-primary/10 border-primary' : ''}`}
+      >
+        <div className="text-right mb-1">
+          <span className={`text-sm font-medium inline-block w-7 h-7 leading-7 text-center rounded-full
+            ${isToday ? 'bg-primary text-primary-foreground' : ''}`}>
+            {format(day, 'd')}
+          </span>
+        </div>
+        <div className="space-y-1 max-h-36 overflow-y-auto">
+          {dayHearings.map(hearing => (
+            <Dialog key={hearing.id}>
+              <DialogTrigger asChild>
+                <button className="w-full text-left">
+                  <div className="bg-primary/10 text-primary rounded px-2 py-1 text-xs">
+                    {hearing.time} - {hearing.description.substring(0, 20)}
+                    {hearing.description.length > 20 ? '...' : ''}
+                  </div>
+                </button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Hearing Details</DialogTitle>
+                  <DialogDescription>
+                    {format(new Date(hearing.date), 'EEEE, MMMM d, yyyy')}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="grid gap-2">
+                    <h3 className="font-medium">{hearing.description}</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="text-sm">
+                          <div className="flex items-center">
+                            <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>{hearing.time}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>{hearing.location}</span>
+                          </div>
+                          <div className="mt-2">{hearing.description}</div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-sm">
+                          <Badge>{hearing.status}</Badge>
+                          {hearing.notes && (
+                            <div className="mt-2">
+                              <span className="text-muted-foreground">Notes: </span>
+                              {hearing.notes}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    onClick={() => {
+                      // Show details or allow editing
+                      toast({
+                        title: "View Full Details",
+                        description: "This would navigate to the full hearing details page",
+                      });
+                    }}
                   >
-                    {hearing.time} - {getCaseTitle(hearing.caseId).substring(0, 14)}
-                    {getCaseTitle(hearing.caseId).length > 14 ? "..." : ""}
-                  </div>
-                ))}
-                {dayHearings.length > 3 && (
-                  <div className="text-xs text-center text-muted-foreground">
-                    +{dayHearings.length - 3} more
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                    View Full Details
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          ))}
+        </div>
       </div>
     );
   };
 
-  // Render week view
-  const renderWeekView = () => {
-    const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-    const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-    
+  const renderDayView = () => {
+    const day = currentDate;
+    const dayHearings = getHearingsForDay(day);
+
     return (
       <div className="space-y-4">
-        <div className="grid grid-cols-7 gap-1">
-          {days.map((day) => (
-            <div
-              key={day.toString()}
-              className={cn(
-                "text-center py-2 font-medium",
-                isSameDay(day, new Date()) && "bg-muted rounded-md"
-              )}
-            >
-              <div>{format(day, "EEE")}</div>
-              <div className="text-lg">{format(day, "d")}</div>
+        <div className="text-center text-xl font-semibold">
+          {format(day, 'EEEE, MMMM d, yyyy')}
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Hearings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {dayHearings.length > 0 ? (
+              <div className="space-y-4">
+                {dayHearings.map(hearing => (
+                  <div key={hearing.id} className="flex border-b pb-3 last:border-0">
+                    <div className="w-24 text-center">
+                      <div className="font-medium">{hearing.time}</div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">{hearing.description}</div>
+                      <div className="text-sm text-muted-foreground">{hearing.location}</div>
+                      <div className="flex items-center mt-1">
+                        <Badge variant="outline">{hearing.status}</Badge>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                No hearings scheduled for today
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  const renderWeekView = () => {
+    const days = getDaysForView();
+
+    return (
+      <div className="space-y-4">
+        <div className="text-center text-xl font-semibold">
+          Week of {format(days[0], 'MMMM d')} - {format(days[6], 'MMMM d, yyyy')}
+        </div>
+        <div className="grid grid-cols-7 text-center">
+          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+            <div key={day} className="py-2 font-medium">
+              {day}
             </div>
           ))}
         </div>
-        
-        <ScrollArea className="h-[400px]">
-          {days.map((day) => {
-            const dateString = format(day, "yyyy-MM-dd");
-            const dayHearings = groupedHearings[dateString] || [];
-            
-            return (
-              <div key={day.toString()} className="mb-4">
-                <h3 className="font-medium mb-2">{format(day, "EEEE, MMMM d")}</h3>
-                {dayHearings.length > 0 ? (
-                  <div className="space-y-2">
-                    {dayHearings.map((hearing) => (
-                      <Card key={hearing.id} className="overflow-hidden">
-                        <CardContent className="p-2">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <div className="font-medium">{getCaseTitle(hearing.caseId)}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {hearing.time} • {hearing.location}
-                              </div>
-                            </div>
-                            <Badge>{hearing.status}</Badge>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center text-muted-foreground py-4">
-                    No hearings scheduled
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </ScrollArea>
+        <div className="grid grid-cols-7">
+          {days.map(day => renderDateCell(day))}
+        </div>
       </div>
     );
   };
 
-  // Render day view
-  const renderDayView = () => {
-    const dateString = format(currentDate, "yyyy-MM-dd");
-    const dayHearings = groupedHearings[dateString] || [];
+  const renderMonthView = () => {
+    const days = getDaysForView();
+    // Get the first day of the month
+    const firstDayOfMonth = startOfMonth(currentDate);
+    // Get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
+    const firstDayOfWeek = firstDayOfMonth.getDay();
+    // Adjust for Monday start (convert Sunday from 0 to 7)
+    const adjustedFirstDay = firstDayOfWeek === 0 ? 7 : firstDayOfWeek;
+    // Calculate how many blank cells we need before the first day
+    const leadingBlanks = adjustedFirstDay - 1;
     
+    // Create blank cells for the leading days
+    const blankCells = Array(leadingBlanks).fill(null).map((_, index) => (
+      <div key={`blank-${index}`} className="border p-2 bg-muted/10"></div>
+    ));
+
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{format(currentDate, "EEEE, MMMM d, yyyy")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {dayHearings.length > 0 ? (
-            <div className="space-y-4">
-              {dayHearings.map((hearing) => (
-                <Card key={hearing.id}>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between mb-2">
-                      <h3 className="text-lg font-medium">{getCaseTitle(hearing.caseId)}</h3>
-                      <Badge>{hearing.status}</Badge>
-                    </div>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex items-center">
-                        <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>{hearing.time}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>{hearing.location}</span>
-                      </div>
-                      <div className="mt-2">{hearing.description}</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+      <div className="space-y-4">
+        <div className="text-center text-xl font-semibold">
+          {format(currentDate, 'MMMM yyyy')}
+        </div>
+        <div className="grid grid-cols-7 text-center">
+          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+            <div key={day} className="py-2 font-medium">
+              {day}
             </div>
-          ) : (
-            <div className="text-center text-muted-foreground py-8">
-              No hearings scheduled for today
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-7">
+          {blankCells}
+          {days.map(day => renderDateCell(day))}
+        </div>
+      </div>
     );
   };
 
-  // Render custom range view
-  const renderCustomRangeView = () => {
-    const daysInRange = Object.keys(groupedHearings).sort();
-    
+  const renderCustomView = () => {
+    const days = getDaysForView();
+
     return (
-      <ScrollArea className="h-[500px]">
-        <div className="space-y-6">
-          {daysInRange.length > 0 ? (
-            daysInRange.map((dateString) => {
-              const day = new Date(dateString);
-              const dayHearings = groupedHearings[dateString] || [];
-              
-              return (
-                <div key={dateString}>
-                  <h3 className="font-medium mb-2">{format(day, "EEEE, MMMM d, yyyy")}</h3>
-                  <div className="space-y-2">
-                    {dayHearings.map((hearing) => (
-                      <Card key={hearing.id}>
-                        <CardContent className="p-3">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <div className="font-medium">{getCaseTitle(hearing.caseId)}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {hearing.time} • {hearing.location}
-                              </div>
-                            </div>
-                            <Badge>{hearing.status}</Badge>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="text-center text-muted-foreground py-8">
-              No hearings scheduled in selected date range
+      <div className="space-y-4">
+        <div className="flex items-center gap-4">
+          <div className="grid grid-cols-2 gap-2 flex-1">
+            <div className="space-y-1">
+              <Label htmlFor="start-date">Start Date</Label>
+              <Input 
+                id="start-date" 
+                type="date" 
+                value={customRange.start}
+                onChange={(e) => setCustomRange({ ...customRange, start: e.target.value })}
+              />
             </div>
-          )}
+            <div className="space-y-1">
+              <Label htmlFor="end-date">End Date</Label>
+              <Input 
+                id="end-date" 
+                type="date" 
+                value={customRange.end}
+                onChange={(e) => setCustomRange({ ...customRange, end: e.target.value })}
+              />
+            </div>
+          </div>
         </div>
-      </ScrollArea>
+        
+        <div className="overflow-auto">
+          <div className="min-w-[600px]">
+            <div className="grid auto-cols-fr" style={{ display: 'grid', gridTemplateColumns: `repeat(${days.length}, minmax(150px, 1fr))` }}>
+              {days.map((day, index) => (
+                <div key={index} className="font-medium text-center py-2">
+                  {format(day, 'E, MMM d')}
+                </div>
+              ))}
+            </div>
+            <div className="grid" style={{ display: 'grid', gridTemplateColumns: `repeat(${days.length}, minmax(150px, 1fr))` }}>
+              {days.map(day => renderDateCell(day))}
+            </div>
+          </div>
+        </div>
+      </div>
     );
   };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-semibold">Schedule</h2>
-          <p className="text-muted-foreground">Manage your hearings and appointments</p>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="icon" onClick={handlePrevious}>
+        <div className="flex space-x-2">
+          <Button variant="outline" size="sm" onClick={navigatePrevious}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="min-w-32 text-center">{renderDateRangeTitle()}</span>
-          <Button variant="outline" size="icon" onClick={handleNext}>
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentDate(new Date())}
-          >
+          <Button variant="outline" size="sm" onClick={navigateToday}>
             Today
+          </Button>
+          <Button variant="outline" size="sm" onClick={navigateNext}>
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
-      
-      <Tabs value={view} onValueChange={(v) => setView(v as CalendarView)}>
-        <div className="flex justify-between items-center mb-4">
-          <TabsList>
-            <TabsTrigger value="day">Day</TabsTrigger>
-            <TabsTrigger value="week">Week</TabsTrigger>
-            <TabsTrigger value="month">Month</TabsTrigger>
-            <TabsTrigger value="custom">Custom Range</TabsTrigger>
-          </TabsList>
-          
-          {view === "custom" && (
-            <div className="flex items-center space-x-2">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="justify-start text-left font-normal w-[240px]">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {customRange.from ? (
-                      customRange.to ? (
-                        <>
-                          {format(customRange.from, "LLL dd, y")} -{" "}
-                          {format(customRange.to, "LLL dd, y")}
-                        </>
-                      ) : (
-                        format(customRange.from, "LLL dd, y")
-                      )
-                    ) : (
-                      <span>Select date range</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="range"
-                    selected={{
-                      from: customRange.from,
-                      to: customRange.to,
-                    }}
-                    onSelect={(range) => {
-                      if (range?.from && range?.to) {
-                        setCustomRange({
-                          from: range.from,
-                          to: range.to,
-                        });
-                      }
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-          )}
-        </div>
 
-        <TabsContent value="day" className="mt-0">
-          {renderDayView()}
-        </TabsContent>
-        
-        <TabsContent value="week" className="mt-0">
-          {renderWeekView()}
-        </TabsContent>
-        
-        <TabsContent value="month" className="mt-0">
-          {renderMonthView()}
-        </TabsContent>
-        
-        <TabsContent value="custom" className="mt-0">
-          {renderCustomRangeView()}
-        </TabsContent>
-      </Tabs>
+      <TabsContent value="day" className="mt-0">
+        {renderDayView()}
+      </TabsContent>
+      
+      <TabsContent value="week" className="mt-0">
+        {renderWeekView()}
+      </TabsContent>
+      
+      <TabsContent value="month" className="mt-0">
+        {renderMonthView()}
+      </TabsContent>
+      
+      <TabsContent value="custom" className="mt-0">
+        {renderCustomView()}
+      </TabsContent>
     </div>
   );
 };

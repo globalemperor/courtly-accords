@@ -15,7 +15,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useData } from "@/context/DataContext";
 import { PlaintiffSelector } from "@/components/cases/PlaintiffSelector";
-import { CaseStatus, User } from "@/types";
+import { CaseStatus, User, Witness, EvidenceItem } from "@/types";
 import {
   Form,
   FormControl,
@@ -25,6 +25,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { FileUploader } from "@/components/cases/FileUploader";
+import { Trash2 } from "lucide-react";
 
 const FileCasePage = () => {
   const { user } = useAuth();
@@ -33,6 +35,19 @@ const FileCasePage = () => {
   const { createCase } = useData();
   const [selectedPlaintiff, setSelectedPlaintiff] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState("details");
+  const [witnesses, setWitnesses] = useState<Witness[]>([]);
+  const [evidenceItems, setEvidenceItems] = useState<EvidenceItem[]>([]);
+  const [newWitness, setNewWitness] = useState<{
+    name: string;
+    contactNumber: string;
+    relation: string;
+    statement: string;
+  }>({
+    name: "",
+    contactNumber: "",
+    relation: "",
+    statement: "",
+  });
 
   const formSchema = z.object({
     title: z.string().min(5, { message: "Title must be at least 5 characters" }),
@@ -87,6 +102,8 @@ const FileCasePage = () => {
         idType: values.defendantIdType,
         idNumber: values.defendantIdNumber,
       },
+      witnesses: witnesses,
+      evidence: evidenceItems,
     };
 
     createCase(newCase);
@@ -97,6 +114,36 @@ const FileCasePage = () => {
     });
 
     navigate("/cases");
+  };
+
+  const addWitness = () => {
+    if (newWitness.name && newWitness.contactNumber && newWitness.relation) {
+      setWitnesses([...witnesses, { ...newWitness }]);
+      setNewWitness({
+        name: "",
+        contactNumber: "",
+        relation: "",
+        statement: "",
+      });
+    } else {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required witness fields",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const removeWitness = (index: number) => {
+    setWitnesses(witnesses.filter((_, i) => i !== index));
+  };
+
+  const addEvidenceItem = (item: EvidenceItem) => {
+    setEvidenceItems([...evidenceItems, item]);
+  };
+
+  const removeEvidenceItem = (index: number) => {
+    setEvidenceItems(evidenceItems.filter((_, i) => i !== index));
   };
 
   return (
@@ -116,10 +163,12 @@ const FileCasePage = () => {
         
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="plaintiff">Plaintiff</TabsTrigger>
               <TabsTrigger value="details">Case Details</TabsTrigger>
               <TabsTrigger value="defendant">Defendant</TabsTrigger>
+              <TabsTrigger value="witnesses">Witnesses</TabsTrigger>
+              <TabsTrigger value="evidence">Evidence</TabsTrigger>
             </TabsList>
             
             <Form {...form}>
@@ -359,7 +408,161 @@ const FileCasePage = () => {
                     <Button type="button" variant="outline" onClick={() => setActiveTab("details")}>
                       Back: Case Details
                     </Button>
-                    <Button type="submit">Submit Case Filing</Button>
+                    <Button type="button" onClick={() => setActiveTab("witnesses")}>
+                      Next: Witnesses
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="witnesses" className="mt-6 space-y-4">
+                  <div className="space-y-6">
+                    <div className="border rounded-md p-4">
+                      <h3 className="text-lg font-medium mb-4">Add Witness</h3>
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="witness-name">Full Name</Label>
+                          <Input 
+                            id="witness-name"
+                            value={newWitness.name}
+                            onChange={(e) => setNewWitness({...newWitness, name: e.target.value})}
+                            placeholder="Full name of witness"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="witness-contact">Contact Number</Label>
+                          <Input 
+                            id="witness-contact"
+                            value={newWitness.contactNumber}
+                            onChange={(e) => setNewWitness({...newWitness, contactNumber: e.target.value})}
+                            placeholder="Phone number"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="witness-relation">Relation to Case</Label>
+                          <Select 
+                            value={newWitness.relation}
+                            onValueChange={(value) => setNewWitness({...newWitness, relation: value})}
+                          >
+                            <SelectTrigger id="witness-relation">
+                              <SelectValue placeholder="Select relation" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="eyewitness">Eyewitness</SelectItem>
+                              <SelectItem value="character">Character Witness</SelectItem>
+                              <SelectItem value="expert">Expert Witness</SelectItem>
+                              <SelectItem value="family">Family Member</SelectItem>
+                              <SelectItem value="associate">Associate</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 mb-4">
+                        <Label htmlFor="witness-statement">Witness Statement (Optional)</Label>
+                        <Textarea 
+                          id="witness-statement"
+                          value={newWitness.statement}
+                          onChange={(e) => setNewWitness({...newWitness, statement: e.target.value})}
+                          placeholder="Summarize what the witness will testify about"
+                          className="min-h-20"
+                        />
+                      </div>
+
+                      <Button type="button" onClick={addWitness}>
+                        Add Witness
+                      </Button>
+                    </div>
+
+                    {witnesses.length > 0 && (
+                      <div className="border rounded-md p-4">
+                        <h3 className="text-lg font-medium mb-4">Witness List ({witnesses.length})</h3>
+                        <div className="space-y-4">
+                          {witnesses.map((witness, index) => (
+                            <div key={index} className="border rounded-md p-3 bg-muted/10">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium">{witness.name}</h4>
+                                  <p className="text-sm text-muted-foreground">{witness.relation}</p>
+                                </div>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon"
+                                  onClick={() => removeWitness(index)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                  <span className="text-muted-foreground">Contact: </span>
+                                  {witness.contactNumber}
+                                </div>
+                                {witness.statement && (
+                                  <div className="col-span-2 mt-1">
+                                    <span className="text-muted-foreground">Statement: </span>
+                                    {witness.statement}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <Button type="button" variant="outline" onClick={() => setActiveTab("defendant")}>
+                      Back: Defendant
+                    </Button>
+                    <Button type="button" onClick={() => setActiveTab("evidence")}>
+                      Next: Evidence
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="evidence" className="mt-6 space-y-4">
+                  <div className="space-y-6">
+                    <div className="border rounded-md p-4">
+                      <h3 className="text-lg font-medium mb-4">Upload Evidence</h3>
+                      <FileUploader onFileUploaded={addEvidenceItem} />
+                    </div>
+
+                    {evidenceItems.length > 0 && (
+                      <div className="border rounded-md p-4">
+                        <h3 className="text-lg font-medium mb-4">Evidence List ({evidenceItems.length})</h3>
+                        <div className="space-y-4">
+                          {evidenceItems.map((item, index) => (
+                            <div key={index} className="border rounded-md p-3 flex justify-between items-center bg-muted/10">
+                              <div>
+                                <h4 className="font-medium">{item.title}</h4>
+                                <p className="text-sm text-muted-foreground">{item.type}</p>
+                                {item.description && (
+                                  <p className="text-sm mt-1">{item.description}</p>
+                                )}
+                              </div>
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => removeEvidenceItem(index)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <Button type="button" variant="outline" onClick={() => setActiveTab("witnesses")}>
+                      Back: Witnesses
+                    </Button>
+                    <Button type="submit" className="bg-primary">
+                      Submit Case Filing
+                    </Button>
                   </div>
                 </TabsContent>
               </form>
