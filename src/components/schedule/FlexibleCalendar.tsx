@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { addDays, format, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, parseISO } from "date-fns";
+import { addDays, format, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, parseISO, isValid } from "date-fns";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -93,9 +92,21 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
         try {
           const startDate = parseISO(customRange.start);
           const endDate = parseISO(customRange.end);
-          if (startDate > endDate) return [currentDate];
+          
+          // Validate the parsed dates
+          if (!isValid(startDate) || !isValid(endDate)) {
+            console.error("Invalid date in custom range", { startDate, endDate });
+            return [currentDate];
+          }
+          
+          if (startDate > endDate) {
+            console.warn("Start date is after end date in custom range");
+            return [currentDate];
+          }
+          
           return eachDayOfInterval({ start: startDate, end: endDate });
         } catch (e) {
+          console.error("Error parsing custom date range", e);
           return [currentDate];
         }
       default:
@@ -151,6 +162,12 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
   };
 
   const renderDateCell = (day: Date) => {
+    // Validate the day object
+    if (!isValid(day)) {
+      console.error("Invalid date object in renderDateCell", day);
+      return <div className="border p-2 bg-muted/30">Invalid date</div>;
+    }
+    
     const dayHearings = getHearingsForDay(day);
     const isCurrentMonth = view === 'month' ? isSameMonth(day, currentDate) : true;
     const isToday = isSameDay(day, new Date());
@@ -240,6 +257,13 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
 
   const renderDayView = () => {
     const day = currentDate;
+    
+    // Validate the day object
+    if (!isValid(day)) {
+      console.error("Invalid date object in renderDayView", day);
+      return <div className="text-center py-8 text-destructive">Invalid date</div>;
+    }
+    
     const dayHearings = getHearingsForDay(day);
 
     return (
@@ -282,11 +306,19 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
 
   const renderWeekView = () => {
     const days = getDaysForView();
+    
+    // Check if we have valid days
+    if (!days.length || !days.every(isValid)) {
+      console.error("Invalid days array in renderWeekView", days);
+      return <div className="text-center py-8 text-destructive">Error: Invalid date range</div>;
+    }
 
     return (
       <div className="space-y-4">
         <div className="text-center text-xl font-semibold">
-          Week of {format(days[0], 'MMMM d')} - {format(days[6], 'MMMM d, yyyy')}
+          {isValid(days[0]) && isValid(days[6]) ? 
+            `Week of ${format(days[0], 'MMMM d')} - ${format(days[6], 'MMMM d, yyyy')}` : 
+            "Invalid date range"}
         </div>
         <div className="grid grid-cols-7 text-center">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
@@ -296,7 +328,10 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
           ))}
         </div>
         <div className="grid grid-cols-7">
-          {days.map(day => renderDateCell(day))}
+          {days.map((day, index) => isValid(day) ? 
+            renderDateCell(day) : 
+            <div key={index} className="border p-2 bg-muted/30">Invalid date</div>
+          )}
         </div>
       </div>
     );
@@ -304,16 +339,18 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
 
   const renderMonthView = () => {
     const days = getDaysForView();
-    // Get the first day of the month
+    
+    // Check if we have valid days
+    if (!days.length || !days.every(isValid)) {
+      console.error("Invalid days array in renderMonthView", days);
+      return <div className="text-center py-8 text-destructive">Error: Invalid date range</div>;
+    }
+    
     const firstDayOfMonth = startOfMonth(currentDate);
-    // Get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
     const firstDayOfWeek = firstDayOfMonth.getDay();
-    // Adjust for Monday start (convert Sunday from 0 to 7)
     const adjustedFirstDay = firstDayOfWeek === 0 ? 7 : firstDayOfWeek;
-    // Calculate how many blank cells we need before the first day
     const leadingBlanks = adjustedFirstDay - 1;
     
-    // Create blank cells for the leading days
     const blankCells = Array(leadingBlanks).fill(null).map((_, index) => (
       <div key={`blank-${index}`} className="border p-2 bg-muted/10"></div>
     ));
@@ -340,7 +377,13 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
 
   const renderCustomView = () => {
     const days = getDaysForView();
-
+    
+    // Check if we have valid days
+    if (!days.length) {
+      console.error("Empty days array in renderCustomView");
+      return <div className="text-center py-8 text-destructive">Error: Please select a valid date range</div>;
+    }
+    
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-4">
