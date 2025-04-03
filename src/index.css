@@ -5,91 +5,83 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 30 25% 25%;
+    --background: 210 40% 98%;
+    --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 30 25% 25%;
+    --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 30 25% 25%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 10 80% 40%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 201 75% 28%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 30 40% 40%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 30 10% 95%;
-    --muted-foreground: 30 25% 35%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 30 30% 90%;
-    --accent-foreground: 30 25% 25%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 30 25% 85%;
-    --input: 30 25% 85%;
-    --ring: 30 40% 40%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 10 80% 35%;
+    --sidebar-background: 201 75% 25%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 10 80% 40%;
+    --sidebar-primary: 201 75% 30%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 10 80% 30%;
+    --sidebar-accent: 201 75% 22%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 10 50% 45%;
-    --sidebar-ring: 10 80% 50%;
-    
-    /* Court theme colors */
-    --court-wood: 30 40% 40%;
-    --court-wood-light: 30 40% 60%;
-    --court-wood-dark: 30 40% 25%;
-    --court-red: 10 80% 40%;
-    --court-red-light: 10 80% 60%;
-    --court-red-dark: 10 80% 30%;
+    --sidebar-border: 201 50% 30%;
+    --sidebar-ring: 201 75% 40%;
   }
 
   .dark {
-    --background: 30 25% 15%;
-    --foreground: 30 10% 95%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 30 25% 15%;
-    --card-foreground: 30 10% 95%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 30 25% 15%;
-    --popover-foreground: 30 10% 95%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 10 80% 40%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 201 75% 28%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 30 40% 30%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 30 25% 25%;
-    --muted-foreground: 30 10% 70%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 30 25% 25%;
-    --accent-foreground: 30 10% 95%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 30 25% 30%;
-    --input: 30 25% 30%;
-    --ring: 30 40% 40%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
     
-    --sidebar-background: 10 80% 25%;
+    --sidebar-background: 201 75% 15%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 10 80% 30%;
+    --sidebar-primary: 201 75% 20%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 10 80% 20%;
+    --sidebar-accent: 201 75% 10%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 10 50% 35%;
-    --sidebar-ring: 10 80% 40%;
+    --sidebar-border: 201 50% 25%;
+    --sidebar-ring: 201 75% 30%;
   }
 }
 
@@ -105,7 +97,7 @@
 
 /* Component styling */
 .court-card {
-  @apply bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow;
+  @apply bg-white p-4 rounded-lg shadow-md border border-court-gray-dark hover:shadow-lg transition-shadow;
 }
 
 .court-layout {
@@ -159,39 +151,6 @@
   }
 }
 
-@keyframes progressLine {
-  0% {
-    width: 0%;
-    opacity: 0;
-  }
-  100% {
-    width: 100%;
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInScale {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes fadeInRotate {
-  0% {
-    opacity: 0;
-    transform: rotate(-5deg) translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: rotate(0) translateY(0);
-  }
-}
-
 .animate-fadeIn {
   animation: fadeIn 0.7s ease-out forwards;
 }
@@ -206,18 +165,6 @@
 
 .animate-float {
   animation: floatAnimation 6s ease-in-out infinite;
-}
-
-.animate-progress-line {
-  animation: progressLine 1.5s ease-out forwards;
-}
-
-.animate-fade-in-scale {
-  animation: fadeInScale 0.7s ease-out forwards;
-}
-
-.animate-fade-in-rotate {
-  animation: fadeInRotate 0.7s ease-out forwards;
 }
 
 .animation-delay-200 {
@@ -236,22 +183,6 @@
   animation-delay: 0.8s;
 }
 
-.animation-delay-1000 {
-  animation-delay: 1s;
-}
-
-.animation-delay-1200 {
-  animation-delay: 1.2s;
-}
-
-.animation-delay-1400 {
-  animation-delay: 1.4s;
-}
-
-.animation-delay-1600 {
-  animation-delay: 1.6s;
-}
-
 /* Interactive elements */
 .hover-scale {
   @apply transition-transform duration-200 hover:scale-105;
@@ -267,7 +198,7 @@
 
 /* Landing page specific styles */
 .gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-court-red to-court-red-light;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-court-blue to-court-blue-light;
 }
 
 .feature-card {
@@ -282,41 +213,8 @@
   @apply p-6 rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1;
 }
 
-.court-box-shadow {
-  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.1);
+.hero-pattern {
+  background-color: #1a5276;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-.court-hero-pattern {
-  background-color: hsl(var(--court-wood-dark));
-  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
-}
-
-.wood-pattern {
-  background-color: hsl(var(--court-wood));
-  background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-
-.case-flow-step {
-  @apply relative flex items-center justify-center w-full;
-}
-
-.case-flow-line {
-  @apply absolute top-1/2 h-0.5 bg-court-red opacity-0;
-  left: 0;
-  right: 0;
-  z-index: 0;
-}
-
-.case-flow-icon {
-  @apply relative z-10 flex items-center justify-center w-14 h-14 rounded-full bg-white text-court-red border-2 border-court-red opacity-0;
-}
-
-.case-flow-content {
-  @apply absolute top-full mt-4 opacity-0 w-40 text-center;
-  transform: translateX(-50%);
-  left: 50%;
-}
-
-.case-flow-active .case-flow-icon {
-  @apply bg-court-red text-white;
-}
