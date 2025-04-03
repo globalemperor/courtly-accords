@@ -64,6 +64,12 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				court: {
+					'wood': 'hsl(var(--court-wood))',
+					'wood-light': 'hsl(var(--court-wood-light))',
+					'wood-dark': 'hsl(var(--court-wood-dark))',
+					'red': 'hsl(var(--court-red))',
+					'red-light': 'hsl(var(--court-red-light))',
+					'red-dark': 'hsl(var(--court-red-dark))',
 					'blue': '#1a5276',
 					'blue-light': '#2980b9',
 					'blue-dark': '#154360',
@@ -138,7 +144,37 @@ export default {
 					'50%': {
 						opacity: '0.8'
 					}
-				}
+				},
+                'progress-line': {
+                    '0%': {
+                        width: '0%',
+                        opacity: '0'
+                    },
+                    '100%': {
+                        width: '100%',
+                        opacity: '1'
+                    }
+                },
+                'fade-in-scale': {
+                    '0%': {
+                        opacity: '0',
+                        transform: 'scale(0.9)'
+                    },
+                    '100%': {
+                        opacity: '1',
+                        transform: 'scale(1)'
+                    }
+                },
+                'fade-in-rotate': {
+                    '0%': {
+                        opacity: '0',
+                        transform: 'rotate(-5deg) translateY(20px)'
+                    },
+                    '100%': {
+                        opacity: '1',
+                        transform: 'rotate(0) translateY(0)'
+                    }
+                }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -147,7 +183,10 @@ export default {
 				'scale-in': 'scale-in 0.5s ease-out forwards',
 				'slide-in-right': 'slide-in-right 0.5s ease-out forwards',
 				'float': 'float 6s ease-in-out infinite',
-				'pulse-subtle': 'pulse-subtle 3s ease-in-out infinite'
+				'pulse-subtle': 'pulse-subtle 3s ease-in-out infinite',
+                'progress-line': 'progress-line 1.5s ease-out forwards',
+                'fade-in-scale': 'fade-in-scale 0.7s ease-out forwards',
+                'fade-in-rotate': 'fade-in-rotate 0.7s ease-out forwards'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

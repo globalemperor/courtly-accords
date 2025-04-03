@@ -1,167 +1,302 @@
+
 import { Button } from "@/components/ui/button";
-import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, Briefcase, BarChart4, Shield, Info, UserCog } from "lucide-react";
+import { Gavel, Scale, Users, BookOpen, ArrowRight, CheckCircle2, FileText, Clock, CalendarDays, PenSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useState, useEffect } from "react";
+import { CaseFlowVisualization } from "@/components/landing/CaseFlowVisualization";
 
 // Mock stats for the platform
 const platformStats = {
   clients: "5,240+",
   lawyers: "1,780+",
   judges: "420+",
-  clerks: "650+",
   casesResolved: "10,500+",
 };
 
 const features = [
   {
-    title: "User Role-Based Access",
-    description: "Separate interfaces for clients, lawyers, clerks, and judges with appropriate permissions and views.",
+    title: "Complete Case Management",
+    description: "Manage the entire lifecycle of court cases, from filing to resolution, with comprehensive tracking and documentation.",
+    icon: FileText,
+  },
+  {
+    title: "Role-Based Access Control",
+    description: "Tailored interfaces for clients, lawyers, clerks, and judges with appropriate permissions and views.",
     icon: Users,
   },
   {
-    title: "Case Management",
-    description: "Create, view, update, and track court cases with comprehensive details and document management.",
-    icon: BookOpen,
-  },
-  {
     title: "Hearing Scheduling",
-    description: "Schedule and manage court hearings, with notifications for all involved parties.",
-    icon: Scale,
+    description: "Efficiently schedule and manage court hearings with automatic notifications for all parties involved.",
+    icon: CalendarDays,
   },
   {
-    title: "Secure Communication",
-    description: "Built-in messaging system for direct communication between clients, lawyers, clerks, and judges.",
+    title: "Digital Evidence Management",
+    description: "Securely store, organize, and share legal documents and evidence within a centralized platform.",
     icon: Gavel,
   },
 ];
 
-// Additional features for the expanded section
-const additionalFeatures = [
+const testimonials = [
   {
-    title: "Document Management",
-    description: "Store, organize, and share legal documents securely within the platform.",
-    icon: Briefcase,
+    quote: "This platform has completely transformed how our law firm manages cases. The efficiency gains are remarkable.",
+    author: "Sarah Johnson",
+    title: "Managing Partner, Johnson & Associates"
   },
   {
-    title: "Real-time Analytics",
-    description: "View detailed analytics on case progress, outcomes, and performance metrics.",
-    icon: BarChart4,
+    quote: "As a judge, the streamlined case view gives me exactly what I need to prepare for hearings efficiently.",
+    author: "Hon. Michael Reynolds",
+    title: "District Court Judge"
   },
   {
-    title: "Secure & Compliant",
-    description: "Enterprise-grade security with full compliance to legal data protection standards.",
-    icon: Shield,
-  },
+    quote: "The transparency this system provides to clients about their case status has dramatically improved our client satisfaction.",
+    author: "David Chen",
+    title: "Legal Operations Director, Chen Legal Group"
+  }
 ];
 
 const Index = () => {
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveTestimonial(prev => (prev + 1) % testimonials.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-court-blue to-court-blue-dark py-16 md:py-24 px-4">
-        <div className="max-w-6xl mx-auto text-center">
+      {/* Hero Section with Courtroom Image Background */}
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/lovable-uploads/3911c596-b48a-40b8-bb5a-95d26daa5dbf.png" 
+            alt="Courtroom" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-court-wood-dark to-court-red-dark opacity-90"></div>
+        </div>
+        
+        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 animate-fadeIn">
-            Streamline Your Court Case Management
+            Professional Court Case Management
           </h1>
           <p className="text-lg md:text-xl text-white/90 mb-8 max-w-3xl mx-auto animate-fadeIn animation-delay-200">
-            The comprehensive platform for managing court cases with efficiency, 
-            transparency, and collaboration between clients, lawyers, clerks, and judges.
+            The comprehensive platform for legal professionals, providing efficient case management and collaboration between all court participants.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fadeIn animation-delay-400">
-            <Button size="lg" asChild className="bg-white text-court-blue hover:bg-white/90 hover:scale-105 transition-transform">
+            <Button size="lg" asChild className="bg-white text-court-red hover:bg-white/90 hover:text-court-red-dark transition-colors">
               <Link to="/login">Get Started</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-white/10 transition-colors">
-              <a href="#features" className="text-court-blue-light">Learn More</a>
+              <a href="#features">Learn More</a>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Justice Statue Highlight */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="order-2 md:order-1 animate-fade-in-scale">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-court-wood-dark">
+                Justice Served With Modern Technology
+              </h2>
+              <p className="text-lg mb-6 text-court-wood-dark/80">
+                Our platform maintains the dignity and tradition of the justice system while bringing modern efficiency to the court process.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Digital case filing and management",
+                  "Secure document handling and storage",
+                  "Streamlined court scheduling",
+                  "Enhanced communication between all parties",
+                  "Comprehensive audit trails for all case activities"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start">
+                    <CheckCircle2 className="h-5 w-5 text-court-red mr-2 mt-0.5" />
+                    <span className="text-court-wood-dark/80">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button asChild className="mt-8 bg-court-red hover:bg-court-red-dark">
+                <Link to="/features">Explore All Features</Link>
+              </Button>
+            </div>
+            
+            <div className="order-1 md:order-2 flex justify-center animate-fade-in-rotate">
+              <div className="relative">
+                <img 
+                  src="/lovable-uploads/66df98b9-6cf6-4a82-8fa2-4bbd9007d56a.png" 
+                  alt="Lady Justice" 
+                  className="max-h-96 object-contain"
+                />
+                <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-court-red/10 to-court-wood/10 -z-10 blur-xl"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-court-gray-dark">
+      <section className="py-12 wood-pattern text-white">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 lg:gap-6 text-center animate-scaleIn">
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.clients}</p>
-              <p className="text-court-blue-dark font-medium text-sm mt-1">Clients</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 text-center animate-scaleIn">
+            <div className="p-5 rounded-lg bg-white/10 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 hover:bg-white/15">
+              <p className="text-2xl md:text-3xl font-bold">{platformStats.clients}</p>
+              <p className="font-medium text-sm mt-1 text-white/80">Clients</p>
             </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.lawyers}</p>
-              <p className="text-court-blue-dark font-medium text-sm mt-1">Lawyers</p>
+            <div className="p-5 rounded-lg bg-white/10 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 hover:bg-white/15">
+              <p className="text-2xl md:text-3xl font-bold">{platformStats.lawyers}</p>
+              <p className="font-medium text-sm mt-1 text-white/80">Lawyers</p>
             </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.judges}</p>
-              <p className="text-court-blue-dark font-medium text-sm mt-1">Judges</p>
+            <div className="p-5 rounded-lg bg-white/10 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 hover:bg-white/15">
+              <p className="text-2xl md:text-3xl font-bold">{platformStats.judges}</p>
+              <p className="font-medium text-sm mt-1 text-white/80">Judges</p>
             </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.clerks}</p>
-              <p className="text-court-blue-dark font-medium text-sm mt-1">Clerks</p>
-            </div>
-            <div className="p-5 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <p className="text-2xl md:text-3xl font-bold text-court-blue">{platformStats.casesResolved}</p>
-              <p className="text-court-blue-dark font-medium text-sm mt-1">Cases Resolved</p>
+            <div className="p-5 rounded-lg bg-white/10 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 hover:bg-white/15">
+              <p className="text-2xl md:text-3xl font-bold">{platformStats.casesResolved}</p>
+              <p className="font-medium text-sm mt-1 text-white/80">Cases Resolved</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Role Features Section - Simplified with just role cards */}
+      {/* Case Flow Visualization Section */}
+      <section id="case-flow" className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-4 text-court-wood-dark">
+            Case Lifecycle Management
+          </h2>
+          <p className="text-center max-w-2xl mx-auto mb-16 text-court-wood-dark/80">
+            Our platform guides cases through each stage of the judicial process with precision and transparency
+          </p>
+          
+          <CaseFlowVisualization />
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-16 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-court-wood-dark">
+            Comprehensive Legal Management Features
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            {features.map((feature, index) => (
+              <div 
+                key={index} 
+                className="bg-white rounded-lg p-6 flex court-box-shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <div className="mr-4 bg-court-red/10 p-3 rounded-lg h-fit">
+                  <feature.icon className="h-6 w-6 text-court-red" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2 text-court-wood-dark">{feature.title}</h3>
+                  <p className="text-court-wood-dark/70">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-16 px-4 bg-court-red text-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-12">What Legal Professionals Say</h2>
+          
+          <div className="relative h-64">
+            {testimonials.map((testimonial, index) => (
+              <div 
+                key={index}
+                className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+                  index === activeTestimonial 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 translate-x-20'
+                }`}
+              >
+                <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
+                  <p className="text-xl italic mb-6">"{testimonial.quote}"</p>
+                  <p className="font-semibold">{testimonial.author}</p>
+                  <p className="text-sm text-white/80">{testimonial.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-center mt-6 gap-2">
+            {testimonials.map((_, index) => (
+              <button 
+                key={index}
+                onClick={() => setActiveTestimonial(index)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === activeTestimonial ? 'bg-white' : 'bg-white/30'
+                }`}
+                aria-label={`View testimonial ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Role Access Section */}
       <section className="py-16 px-4 bg-white" id="login-options">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Login by Role
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-court-wood-dark">
+            Access By Role
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Client Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="border border-gray-200 hover:border-court-red transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <Users className="h-8 w-8 text-blue-500" />
+                <div className="h-16 w-16 rounded-full bg-court-red/15 flex items-center justify-center mb-4">
+                  <Users className="h-8 w-8 text-court-red" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Clients</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-blue-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center text-court-wood-dark">For Clients</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-court-red hover:text-white transition-colors">
                   <Link to="/login/client">Login</Link>
                 </Button>
               </CardContent>
             </Card>
             
             {/* Lawyer Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="border border-gray-200 hover:border-court-red transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <Scale className="h-8 w-8 text-green-500" />
+                <div className="h-16 w-16 rounded-full bg-court-red/15 flex items-center justify-center mb-4">
+                  <Scale className="h-8 w-8 text-court-red" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Lawyers</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-green-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center text-court-wood-dark">For Lawyers</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-court-red hover:text-white transition-colors">
                   <Link to="/login/lawyer">Login</Link>
                 </Button>
               </CardContent>
             </Card>
             
             {/* Clerk Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="border border-gray-200 hover:border-court-red transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <UserCog className="h-8 w-8 text-purple-500" />
+                <div className="h-16 w-16 rounded-full bg-court-red/15 flex items-center justify-center mb-4">
+                  <PenSquare className="h-8 w-8 text-court-red" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Clerks</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-purple-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center text-court-wood-dark">For Clerks</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-court-red hover:text-white transition-colors">
                   <Link to="/login/clerk">Login</Link>
                 </Button>
               </CardContent>
             </Card>
             
             {/* Judge Box */}
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card className="border border-gray-200 hover:border-court-red transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <CardContent className="p-6 flex flex-col items-center justify-center h-full">
-                <div className="h-16 w-16 rounded-full bg-court-blue-light/15 flex items-center justify-center mb-4">
-                  <Gavel className="h-8 w-8 text-red-500" />
+                <div className="h-16 w-16 rounded-full bg-court-red/15 flex items-center justify-center mb-4">
+                  <Gavel className="h-8 w-8 text-court-red" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-center">For Judges</h3>
-                <Button variant="outline" asChild className="w-full hover:bg-red-500 hover:text-white transition-colors">
+                <h3 className="text-xl font-semibold mb-4 text-center text-court-wood-dark">For Judges</h3>
+                <Button variant="outline" asChild className="w-full hover:bg-court-red hover:text-white transition-colors">
                   <Link to="/login/judge">Login</Link>
                 </Button>
               </CardContent>
@@ -170,154 +305,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-16 px-4 bg-court-gray">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Powerful Features for Court Case Management
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {features.map((feature, index) => (
-              <div 
-                key={index} 
-                className="bg-white rounded-lg shadow-md p-6 flex hover:shadow-lg transition-shadow hover:scale-[1.02] transition-transform"
-              >
-                <div className="mr-4 bg-court-blue/10 p-3 rounded-lg h-fit">
-                  <feature.icon className="h-6 w-6 text-court-blue" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-            Why Choose Our Platform?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6 mt-12">
-            {additionalFeatures.map((feature, index) => (
-              <div 
-                key={index} 
-                className="bg-court-gray rounded-lg shadow-md p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="h-16 w-16 rounded-full bg-court-blue-light flex items-center justify-center">
-                    <feature.icon className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-12 text-center">
-            <ul className="inline-grid sm:grid-cols-2 gap-x-12 gap-y-4 text-left mx-auto">
-              {[
-                "Intuitive user interface",
-                "24/7 technical support",
-                "Regular feature updates",
-                "Custom workflow options",
-                "Data export capabilities",
-                "Advanced search functionality"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center">
-                  <CheckCircle2 className="h-5 w-5 text-court-blue mr-2" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Learn More Section */}
-      <section id="how-it-works" className="py-12 px-4 bg-court-gray">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-            Getting Started with CourtWise
-          </h2>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h3 className="font-semibold text-lg mb-2 flex items-center text-blue-700">
-                  <span className="bg-blue-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-blue-700 text-sm">1</span>
-                  Create Your Account
-                </h3>
-                <p className="text-sm">Sign up with your details as a client, lawyer, or court official. Each role has a tailored experience.</p>
-              </div>
-              
-              <div className="bg-green-50 rounded-lg p-4">
-                <h3 className="font-semibold text-lg mb-2 flex items-center text-green-700">
-                  <span className="bg-green-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-green-700 text-sm">2</span>
-                  Set Up Your Profile
-                </h3>
-                <p className="text-sm">Complete your profile with all necessary details and credentials to make the most of the platform.</p>
-              </div>
-              
-              <div className="bg-purple-50 rounded-lg p-4">
-                <h3 className="font-semibold text-lg mb-2 flex items-center text-purple-700">
-                  <span className="bg-purple-100 h-6 w-6 rounded-full flex items-center justify-center mr-2 text-purple-700 text-sm">3</span>
-                  Start Using Features
-                </h3>
-                <p className="text-sm">Explore the dashboard, connect with other users, and utilize the features specific to your role.</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6 flex items-start">
-            <div className="bg-blue-100 p-2 rounded-full mr-4 flex-shrink-0">
-              <Info className="h-6 w-6 text-blue-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Need Help?</h3>
-              <p className="text-gray-700 mb-4 text-sm">
-                Our support team is available to help you get the most out of CourtWise.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Button variant="outline" size="sm" asChild className="text-xs">
-                  <Link to="/documentation">Documentation</Link>
-                </Button>
-                <Button variant="outline" size="sm" asChild className="text-xs">
-                  <Link to="/guides">Tutorials</Link>
-                </Button>
-                <Button variant="outline" size="sm" asChild className="text-xs">
-                  <Link to="/faq">FAQ</Link>
-                </Button>
-                <Button variant="outline" size="sm" asChild className="text-xs">
-                  <Link to="/help">Contact Support</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-          
-          <div className="text-center mt-8">
-            <Button size="lg" asChild className="bg-court-blue hover:bg-court-blue-dark">
-              <Link to="/login">Get Started Now</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-court-blue-dark to-court-blue py-12 px-4 text-white">
+      <section className="py-16 px-4 wood-pattern text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             Ready to Transform Your Court Case Management?
           </h2>
           <p className="text-white/80 mb-8 max-w-2xl mx-auto">
-            Join thousands of legal professionals who use CourtWise to streamline their 
+            Join thousands of legal professionals who use our platform to streamline their 
             court case workflows and improve collaboration.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" asChild className="bg-white text-court-blue hover:bg-white/90 hover:scale-105 transition-transform">
+            <Button size="lg" asChild className="bg-white text-court-red hover:bg-white/90 hover:text-court-red-dark transition-colors">
               <Link to="/login">Get Started Today</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-white/10">
@@ -328,7 +327,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-court-blue-dark text-white/80 py-12 px-4">
+      <footer className="bg-court-wood-dark text-white/80 py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
@@ -349,7 +348,7 @@ const Index = () => {
                 </Link>
                 <Link to="#" className="h-8 w-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.504.344-1.857.182-.467.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd"></path>
+                    <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.504.344-1.857.182-.467.399-.8.748-1.15.35-.35.683-.566 1.15-.748.353-.137.882-.3 1.857-.344 1.054-.048 1.37-.058 4.041-.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd"></path>
                   </svg>
                 </Link>
               </div>
