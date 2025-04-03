@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,8 @@ import { DataProvider } from "./context/DataContext";
 import { useEffect } from "react";
 import setupTestEnvironment from "./utils/initialSetup";
 import { ScrollToTop } from "./components/ScrollToTop";
+import NotificationService from "./services/NotificationService";
+import { useData } from "./context/DataContext";
 
 // New page imports
 import Messages from "./pages/Messages";
@@ -58,6 +61,23 @@ const queryClient = new QueryClient();
 // Run the initial setup once on app load
 setupTestEnvironment();
 
+// Component to handle notifications
+const NotificationManager = () => {
+  const { hearings, cases } = useData();
+  
+  useEffect(() => {
+    const notificationService = NotificationService.getInstance();
+    notificationService.setupHearingReminders(hearings, cases);
+    
+    // Clean up on unmount
+    return () => {
+      // Nothing to clean up here since the service handles its own cleanup
+    };
+  }, [hearings, cases]);
+  
+  return null;
+};
+
 const AppContent = () => {
   return (
     <BrowserRouter>
@@ -67,6 +87,7 @@ const AppContent = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <NotificationManager />
             <Routes>
               <Route path="/" element={<Index />} />
               
