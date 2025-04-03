@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { addDays, format, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks } from "date-fns";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -277,7 +277,7 @@ export const FlexibleCalendar = () => {
                         <span>{hearing.time}</span>
                       </div>
                       <div className="flex items-center">
-                        <Gavel className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
                         <span>{hearing.location}</span>
                       </div>
                       <div className="mt-2">{hearing.description}</div>

@@ -15,7 +15,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useData } from "@/context/DataContext";
 import { PlaintiffSelector } from "@/components/cases/PlaintiffSelector";
-import { User } from "@/types";
+import { CaseStatus, User } from "@/types";
 import {
   Form,
   FormControl,
@@ -75,7 +75,7 @@ const FileCasePage = () => {
       description: values.description,
       clientId: selectedPlaintiff.id,
       lawyerId: user?.id,
-      status: "pending",
+      status: "pending" as CaseStatus,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       type: values.type,
