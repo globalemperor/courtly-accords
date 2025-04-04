@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { addDays, format, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, parseISO, isValid } from "date-fns";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
@@ -15,22 +16,38 @@ import { useHearingNotifications } from "@/services/HearingNotificationService";
 
 interface FlexibleCalendarProps {
   viewMode: "day" | "week" | "month" | "custom";
+  selectedDate?: Date;
+  onDateSelect?: (date: Date) => void;
 }
 
 type CalendarView = "day" | "week" | "month" | "custom";
 
-export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) => {
+export const FlexibleCalendar = ({ 
+  viewMode = "week", 
+  selectedDate = new Date(), 
+  onDateSelect 
+}: FlexibleCalendarProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { cases, hearings: allHearings, addHearing, updateHearing } = useData();
   const hearingNotifications = useHearingNotifications();
   
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(selectedDate);
   const [view, setView] = useState<CalendarView>(viewMode);
   const [customRange, setCustomRange] = useState<{ start: string; end: string }>({
     start: format(new Date(), 'yyyy-MM-dd'),
     end: format(addDays(new Date(), 7), 'yyyy-MM-dd')
   });
+  
+  // Update current date when selectedDate prop changes
+  useEffect(() => {
+    setCurrentDate(selectedDate);
+  }, [selectedDate]);
+  
+  // Update view mode when prop changes
+  useEffect(() => {
+    setView(viewMode);
+  }, [viewMode]);
   
   // Filter hearings based on user role and ID
   const filteredHearings = allHearings.filter(hearing => {
@@ -70,11 +87,6 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
       hearingNotifications.stopNotificationService();
     };
   }, [filteredHearings, user]);
-  
-  // Update view mode when prop changes
-  useEffect(() => {
-    setView(viewMode);
-  }, [viewMode]);
   
   // Get days for the current view
   const getDaysForView = () => {
@@ -117,22 +129,41 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
   // Get hearings for a specific day
   const getHearingsForDay = (day: Date) => {
     return filteredHearings.filter(hearing => {
-      const hearingDate = new Date(hearing.date);
-      return isSameDay(hearingDate, day);
+      try {
+        const hearingDate = new Date(hearing.date);
+        return isSameDay(hearingDate, day);
+      } catch (e) {
+        console.error("Error parsing hearing date", e, hearing);
+        return false;
+      }
     });
+  };
+
+  // Handle date selection
+  const handleDateClick = (day: Date) => {
+    if (onDateSelect) {
+      onDateSelect(day);
+    }
+    setCurrentDate(day);
   };
 
   // Navigation functions
   const navigatePrevious = () => {
     switch (view) {
       case 'day':
-        setCurrentDate(prev => addDays(prev, -1));
+        const prevDay = addDays(currentDate, -1);
+        setCurrentDate(prevDay);
+        if (onDateSelect) onDateSelect(prevDay);
         break;
       case 'week':
-        setCurrentDate(prev => subWeeks(prev, 1));
+        const prevWeek = subWeeks(currentDate, 1);
+        setCurrentDate(prevWeek);
+        if (onDateSelect) onDateSelect(prevWeek);
         break;
       case 'month':
-        setCurrentDate(prev => subMonths(prev, 1));
+        const prevMonth = subMonths(currentDate, 1);
+        setCurrentDate(prevMonth);
+        if (onDateSelect) onDateSelect(prevMonth);
         break;
       case 'custom':
         // No navigation for custom view
@@ -143,13 +174,19 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
   const navigateNext = () => {
     switch (view) {
       case 'day':
-        setCurrentDate(prev => addDays(prev, 1));
+        const nextDay = addDays(currentDate, 1);
+        setCurrentDate(nextDay);
+        if (onDateSelect) onDateSelect(nextDay);
         break;
       case 'week':
-        setCurrentDate(prev => addWeeks(prev, 1));
+        const nextWeek = addWeeks(currentDate, 1);
+        setCurrentDate(nextWeek);
+        if (onDateSelect) onDateSelect(nextWeek);
         break;
       case 'month':
-        setCurrentDate(prev => addMonths(prev, 1));
+        const nextMonth = addMonths(currentDate, 1);
+        setCurrentDate(nextMonth);
+        if (onDateSelect) onDateSelect(nextMonth);
         break;
       case 'custom':
         // No navigation for custom view
@@ -158,7 +195,9 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
   };
 
   const navigateToday = () => {
-    setCurrentDate(new Date());
+    const today = new Date();
+    setCurrentDate(today);
+    if (onDateSelect) onDateSelect(today);
   };
 
   const renderDateCell = (day: Date) => {
@@ -171,17 +210,22 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
     const dayHearings = getHearingsForDay(day);
     const isCurrentMonth = view === 'month' ? isSameMonth(day, currentDate) : true;
     const isToday = isSameDay(day, new Date());
+    const isSelected = isSameDay(day, selectedDate);
 
     return (
       <div
         key={day.toString()}
         className={`border p-2 ${
           isCurrentMonth ? '' : 'bg-muted/30 text-muted-foreground'
-        } ${isToday ? 'bg-primary/10 border-primary' : ''}`}
+        } ${isToday ? 'bg-primary/10 border-primary' : ''} 
+        ${isSelected ? 'bg-primary/20 border-primary' : ''} 
+        cursor-pointer hover:bg-primary/5 transition-colors`}
+        onClick={() => handleDateClick(day)}
       >
         <div className="text-right mb-1">
           <span className={`text-sm font-medium inline-block w-7 h-7 leading-7 text-center rounded-full
-            ${isToday ? 'bg-primary text-primary-foreground' : ''}`}>
+            ${isToday ? 'bg-primary text-primary-foreground' : ''}
+            ${isSelected && !isToday ? 'bg-primary/70 text-primary-foreground' : ''}`}>
             {format(day, 'd')}
           </span>
         </div>
@@ -189,14 +233,14 @@ export const FlexibleCalendar = ({ viewMode = "week" }: FlexibleCalendarProps) =
           {dayHearings.map(hearing => (
             <Dialog key={hearing.id}>
               <DialogTrigger asChild>
-                <button className="w-full text-left">
+                <button className="w-full text-left" onClick={(e) => e.stopPropagation()}>
                   <div className="bg-primary/10 text-primary rounded px-2 py-1 text-xs">
                     {hearing.time} - {hearing.description.substring(0, 20)}
                     {hearing.description.length > 20 ? '...' : ''}
                   </div>
                 </button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent onClick={(e) => e.stopPropagation()}>
                 <DialogHeader>
                   <DialogTitle>Hearing Details</DialogTitle>
                   <DialogDescription>
