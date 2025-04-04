@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { addDays, format, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, parseISO, isValid } from "date-fns";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
@@ -39,39 +38,32 @@ export const FlexibleCalendar = ({
     end: format(addDays(new Date(), 7), 'yyyy-MM-dd')
   });
   
-  // Update current date when selectedDate prop changes
   useEffect(() => {
     setCurrentDate(selectedDate);
   }, [selectedDate]);
   
-  // Update view mode when prop changes
   useEffect(() => {
     setView(viewMode);
   }, [viewMode]);
   
-  // Filter hearings based on user role and ID
   const filteredHearings = allHearings.filter(hearing => {
     if (!user) return false;
     
-    // If user is a judge, show all hearings they are presiding over
     if (user.role === 'judge') {
       const relatedCase = cases.find(c => c.id === hearing.caseId);
       return relatedCase?.judgeName === user.name || relatedCase?.judgeId === user.id;
     }
     
-    // If user is a lawyer, show hearings for their cases
     if (user.role === 'lawyer') {
       const relatedCase = cases.find(c => c.id === hearing.caseId);
       return relatedCase?.lawyerId === user.id;
     }
     
-    // If user is a client, show hearings for their cases
     if (user.role === 'client') {
       const relatedCase = cases.find(c => c.id === hearing.caseId);
       return relatedCase?.clientId === user.id;
     }
     
-    // If user is a clerk, show all hearings
     if (user.role === 'clerk') {
       return true;
     }
@@ -79,7 +71,6 @@ export const FlexibleCalendar = ({
     return false;
   });
   
-  // Set up hearing notifications
   useEffect(() => {
     hearingNotifications.startNotificationService(filteredHearings, user);
     
@@ -88,7 +79,6 @@ export const FlexibleCalendar = ({
     };
   }, [filteredHearings, user]);
   
-  // Get days for the current view
   const getDaysForView = () => {
     switch (view) {
       case 'day':
@@ -105,7 +95,6 @@ export const FlexibleCalendar = ({
           const startDate = parseISO(customRange.start);
           const endDate = parseISO(customRange.end);
           
-          // Validate the parsed dates
           if (!isValid(startDate) || !isValid(endDate)) {
             console.error("Invalid date in custom range", { startDate, endDate });
             return [currentDate];
@@ -126,7 +115,6 @@ export const FlexibleCalendar = ({
     }
   };
 
-  // Get hearings for a specific day
   const getHearingsForDay = (day: Date) => {
     return filteredHearings.filter(hearing => {
       try {
@@ -139,7 +127,6 @@ export const FlexibleCalendar = ({
     });
   };
 
-  // Handle date selection
   const handleDateClick = (day: Date) => {
     if (onDateSelect) {
       onDateSelect(day);
@@ -147,7 +134,6 @@ export const FlexibleCalendar = ({
     setCurrentDate(day);
   };
 
-  // Navigation functions
   const navigatePrevious = () => {
     switch (view) {
       case 'day':
@@ -166,7 +152,6 @@ export const FlexibleCalendar = ({
         if (onDateSelect) onDateSelect(prevMonth);
         break;
       case 'custom':
-        // No navigation for custom view
         break;
     }
   };
@@ -189,7 +174,6 @@ export const FlexibleCalendar = ({
         if (onDateSelect) onDateSelect(nextMonth);
         break;
       case 'custom':
-        // No navigation for custom view
         break;
     }
   };
@@ -201,7 +185,6 @@ export const FlexibleCalendar = ({
   };
 
   const renderDateCell = (day: Date) => {
-    // Validate the day object
     if (!isValid(day)) {
       console.error("Invalid date object in renderDateCell", day);
       return <div className="border p-2 bg-muted/30">Invalid date</div>;
@@ -281,7 +264,6 @@ export const FlexibleCalendar = ({
                 <DialogFooter>
                   <Button
                     onClick={() => {
-                      // Show details or allow editing
                       toast({
                         title: "View Full Details",
                         description: "This would navigate to the full hearing details page",
@@ -302,7 +284,6 @@ export const FlexibleCalendar = ({
   const renderDayView = () => {
     const day = currentDate;
     
-    // Validate the day object
     if (!isValid(day)) {
       console.error("Invalid date object in renderDayView", day);
       return <div className="text-center py-8 text-destructive">Invalid date</div>;
@@ -339,7 +320,7 @@ export const FlexibleCalendar = ({
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                No hearings scheduled for today
+                No hearings scheduled for this day
               </div>
             )}
           </CardContent>
@@ -351,7 +332,6 @@ export const FlexibleCalendar = ({
   const renderWeekView = () => {
     const days = getDaysForView();
     
-    // Check if we have valid days
     if (!days.length || !days.every(isValid)) {
       console.error("Invalid days array in renderWeekView", days);
       return <div className="text-center py-8 text-destructive">Error: Invalid date range</div>;
@@ -384,7 +364,6 @@ export const FlexibleCalendar = ({
   const renderMonthView = () => {
     const days = getDaysForView();
     
-    // Check if we have valid days
     if (!days.length || !days.every(isValid)) {
       console.error("Invalid days array in renderMonthView", days);
       return <div className="text-center py-8 text-destructive">Error: Invalid date range</div>;
@@ -422,7 +401,6 @@ export const FlexibleCalendar = ({
   const renderCustomView = () => {
     const days = getDaysForView();
     
-    // Check if we have valid days
     if (!days.length) {
       console.error("Empty days array in renderCustomView");
       return <div className="text-center py-8 text-destructive">Error: Please select a valid date range</div>;
