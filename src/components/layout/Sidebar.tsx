@@ -74,7 +74,6 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
         <button 
           onClick={toggleSidebar}
           className="p-1 rounded-md hover:bg-accent"
-          aria-label={shown ? "Collapse sidebar" : "Expand sidebar"}
         >
           {shown ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -114,18 +113,18 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
 
       <nav className="flex-1 overflow-y-auto p-2 space-y-1">
         <NavLink to="/dashboard" className={getNavLinkClass}>
-          <LayoutDashboard size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+          <LayoutDashboard size={20} />
           {renderLinkText("Dashboard")}
         </NavLink>
 
         {user?.role === 'client' && (
           <>
             <NavLink to="/cases" className={getNavLinkClass}>
-              <FileText size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <FileText size={20} />
               {renderLinkText("My Cases")}
             </NavLink>
             <NavLink to="/find-lawyer" className={getNavLinkClass}>
-              <Briefcase size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <Briefcase size={20} />
               {renderLinkText("Find Lawyer")}
             </NavLink>
           </>
@@ -134,19 +133,19 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
         {user?.role === 'lawyer' && (
           <>
             <NavLink to="/cases" className={getNavLinkClass}>
-              <FileText size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <FileText size={20} />
               {renderLinkText("Cases")}
             </NavLink>
             <NavLink to="/file-case" className={getNavLinkClass}>
-              <FileText size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <FileText size={20} />
               {renderLinkText("File a Case")}
             </NavLink>
             <NavLink to="/case-requests" className={getNavLinkClass}>
-              <UserCheck size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <UserCheck size={20} />
               {renderLinkText("Case Requests")}
             </NavLink>
             <NavLink to="/clients" className={getNavLinkClass}>
-              <Users size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <Users size={20} />
               {renderLinkText("Clients")}
             </NavLink>
           </>
@@ -155,11 +154,11 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
         {user?.role === 'clerk' && (
           <>
             <NavLink to="/new-cases" className={getNavLinkClass}>
-              <FileText size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <FileText size={20} />
               {renderLinkText("New Cases")}
             </NavLink>
             <NavLink to="/hearings" className={getNavLinkClass}>
-              <Calendar size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <Calendar size={20} />
               {renderLinkText("Hearings")}
             </NavLink>
           </>
@@ -168,23 +167,23 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
         {user?.role === 'judge' && (
           <>
             <NavLink to="/docket" className={getNavLinkClass}>
-              <FileText size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <FileText size={20} />
               {renderLinkText("My Docket")}
             </NavLink>
             <NavLink to="/case-summary" className={getNavLinkClass}>
-              <Gavel size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+              <Gavel size={20} />
               {renderLinkText("Case Summary")}
             </NavLink>
           </>
         )}
 
         <NavLink to="/messages" className={getNavLinkClass}>
-          <MessageSquare size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+          <MessageSquare size={20} />
           {renderLinkText("Messages")}
         </NavLink>
 
         <NavLink to="/schedule" className={getNavLinkClass}>
-          <Calendar size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+          <Calendar size={20} />
           {renderLinkText("Schedule")}
         </NavLink>
       </nav>
@@ -195,7 +194,7 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
           onClick={handleLogout}
           className={`w-full ${!shown && !isMobile ? "px-2" : ""}`}
         >
-          <LogOut size={20} className="flex-shrink-0 mx-auto md:mx-0" />
+          <LogOut size={20} />
           {(shown || isMobile) && <span className="ml-2">Logout</span>}
         </Button>
       </div>
