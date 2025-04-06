@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, Send, X, ArrowRight } from "lucide-react";
+import { MessageSquare, Send, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,7 +15,18 @@ interface Message {
   timestamp: Date;
 }
 
-export const Chatbot = () => {
+interface KnowledgeBase {
+  [key: string]: {
+    question: string[];
+    answer: string[];
+  };
+}
+
+interface ChatbotProps {
+  knowledgeBase: KnowledgeBase;
+}
+
+export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -36,6 +47,36 @@ export const Chatbot = () => {
     "Great question about filing cases:\n• Lawyers can file new cases\n• Required documents must be uploaded\n• Fill in all mandatory fields\n• Submit for court review",
     "About CourtWise access:\n• Different roles have different permissions\n• Clients can view their own cases\n• Lawyers manage multiple cases\n• Judges access their assigned dockets"
   ];
+
+  // Function to find the best response from knowledge base
+  const findBestResponse = (userQuery: string): string | null => {
+    let bestMatch = null;
+    let highestMatchScore = 0;
+    
+    const normalizedQuery = userQuery.toLowerCase();
+    
+    Object.values(knowledgeBase).forEach(topic => {
+      topic.question.forEach((question, index) => {
+        const keywords = question.toLowerCase().split(" ");
+        let matchScore = 0;
+        
+        keywords.forEach(keyword => {
+          if (normalizedQuery.includes(keyword)) {
+            matchScore++;
+          }
+        });
+        
+        // If we have a better match than before
+        if (matchScore > highestMatchScore) {
+          highestMatchScore = matchScore;
+          bestMatch = topic.answer[0]; // Using the first answer in the array
+        }
+      });
+    });
+    
+    // Only return a match if it's somewhat relevant
+    return highestMatchScore > 1 ? bestMatch : null;
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -60,12 +101,15 @@ export const Chatbot = () => {
     setMessages(prev => [...prev, userMessage]);
     setInput("");
 
+    // Try to find a response from the knowledge base
+    const knowledgeResponse = findBestResponse(input);
+    
     // Simulate bot response with slight delay
     setTimeout(() => {
       const botMessage: Message = {
         id: `bot-${Date.now()}`,
         sender: 'bot',
-        text: mockResponses[Math.floor(Math.random() * mockResponses.length)],
+        text: knowledgeResponse || mockResponses[Math.floor(Math.random() * mockResponses.length)],
         timestamp: new Date()
       };
       
