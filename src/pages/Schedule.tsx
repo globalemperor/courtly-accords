@@ -9,9 +9,10 @@ import {
 import { FlexibleCalendar } from "@/components/schedule/FlexibleCalendar";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useData } from "@/context/DataContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Schedule = () => {
   const [viewMode, setViewMode] = useState<"day" | "week" | "month" | "custom">("week");
@@ -22,10 +23,12 @@ const Schedule = () => {
   const formattedDate = format(selectedDate, "EEEE, MMMM d, yyyy");
 
   // Get hearings for the selected date
-  const hasHearings = hearings.some(hearing => {
+  const todaysHearings = hearings.filter(hearing => {
     const hearingDate = new Date(hearing.date);
     return hearingDate.toDateString() === selectedDate.toDateString();
   });
+
+  const hasHearings = todaysHearings.length > 0;
 
   return (
     <div className="space-y-6">
@@ -57,6 +60,16 @@ const Schedule = () => {
         selectedDate={selectedDate} 
         onDateSelect={setSelectedDate} 
       />
+      
+      {/* No hearings message */}
+      {!hasHearings && (
+        <Alert variant="default" className="bg-muted/50">
+          <AlertCircle className="h-4 w-4 mr-2" />
+          <AlertDescription>
+            No hearings or appointments scheduled for {formattedDate}.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 };

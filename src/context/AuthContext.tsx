@@ -186,6 +186,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('courtwise_session');
       localStorage.removeItem('courtwise_user');
       setUser(null);
+      
+      // No need to navigate here as we'll handle it in the component
     } catch (error) {
       console.error('Logout error:', error);
     }

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -40,7 +39,7 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate("/");
   };
 
   const toggleSidebar = () => {
@@ -63,7 +62,7 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
     <aside className={`
       court-sidebar bg-background h-screen flex flex-col border-r 
       transition-all duration-300 overflow-hidden
-      ${shown ? 'w-64' : isMobile ? '-translate-x-full' : 'w-16'}
+      ${shown ? 'w-64' : isMobile ? 'fixed -translate-x-full' : 'w-16'}
       ${isMobile ? 'fixed z-50 shadow-lg' : 'relative'}
     `}>
       <div className="p-4 border-b flex justify-between items-center">
@@ -73,6 +72,7 @@ const Sidebar = ({ shown, setShown }: SidebarProps) => {
         <button 
           onClick={toggleSidebar}
           className="p-1 rounded-md hover:bg-accent"
+          aria-label={shown ? "Close sidebar" : "Open sidebar"}
         >
           {shown ? <X size={20} /> : <Menu size={20} />}
         </button>

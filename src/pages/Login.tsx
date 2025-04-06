@@ -1,7 +1,7 @@
 
 import { useAuth } from "@/context/AuthContext";
-import { Navigate, useLocation, useParams, useSearchParams } from "react-router-dom";
-import { Gavel, User, UserCog, Scale, PenLine, Info } from "lucide-react";
+import { Navigate, useLocation, useParams, useSearchParams, Link } from "react-router-dom";
+import { Gavel, User, UserCog, Scale, PenLine, Info, ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SignInForm } from "@/components/auth/SignInForm";
 import { SignUpForm } from "@/components/auth/SignUpForm";
@@ -143,6 +143,14 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gradient-to-br from-court-gray to-court-blue/10 p-4">
+      {/* Back button - added at the top left */}
+      <Link 
+        to="/" 
+        className="absolute top-4 left-4 flex items-center text-court-blue hover:underline"
+      >
+        <ArrowLeft className="h-4 w-4 mr-1" /> Back to Home
+      </Link>
+      
       {/* Left side - branding (hidden on mobile) */}
       <div className={`hidden md:flex flex-col items-center md:items-start space-y-8 md:w-1/2 p-8 transition-all duration-700 ease-in-out ${showAnimation ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
         <div className="flex items-center space-x-4">
