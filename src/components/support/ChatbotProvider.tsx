@@ -5,9 +5,18 @@ import { useAuth } from "@/context/AuthContext";
 
 // Define the knowledge base for law-related questions
 export const legalKnowledgeBase = {
+  greeting: {
+    question: ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "howdy", "greetings"],
+    answer: [
+      "Hello! How can I assist you with CourtWise today?",
+      "Hi there! What can I help you with regarding court cases or legal processes?",
+      "Greetings! I'm your CourtWise assistant. What information do you need today?",
+      "Welcome to CourtWise support! How may I assist you with your legal queries?"
+    ]
+  },
   // General legal questions
   legalSystem: {
-    question: ["legal system", "how does court work", "court system"],
+    question: ["legal system", "how does court work", "court system", "how courts work", "legal process"],
     answer: [
       "The legal system typically works in these steps:",
       "• Case filing - Submit required documents to initiate legal proceedings",
@@ -20,7 +29,7 @@ export const legalKnowledgeBase = {
     ]
   },
   legalTerms: {
-    question: ["legal terms", "court terms", "law terminology"],
+    question: ["legal terms", "court terms", "law terminology", "legal dictionary", "what does mean in law"],
     answer: [
       "Here are common legal terms you might encounter:",
       "• Plaintiff - The person/entity filing the lawsuit",
@@ -35,7 +44,7 @@ export const legalKnowledgeBase = {
     ]
   },
   evidenceTypes: {
-    question: ["evidence types", "what is evidence", "types of evidence", "proof", "legal evidence"],
+    question: ["evidence types", "what is evidence", "types of evidence", "proof", "legal evidence", "how to submit evidence"],
     answer: [
       "Evidence in court cases can be categorized as:",
       "• Documentary evidence - Written documents, contracts, records",
@@ -49,7 +58,7 @@ export const legalKnowledgeBase = {
     ]
   },
   witnessTypes: {
-    question: ["witness types", "types of witnesses", "who can be witness"],
+    question: ["witness types", "types of witnesses", "who can be witness", "witness information", "witness requirements"],
     answer: [
       "Different types of witnesses in legal proceedings include:",
       "• Eyewitnesses - People who directly observed relevant events",
@@ -61,7 +70,7 @@ export const legalKnowledgeBase = {
     ]
   },
   filingCase: {
-    question: ["how to file case", "filing a lawsuit", "start legal proceedings"],
+    question: ["how to file case", "filing a lawsuit", "start legal proceedings", "submit case", "file new case"],
     answer: [
       "To file a case through our platform:",
       "• Create an account or log in as a client",
@@ -76,7 +85,7 @@ export const legalKnowledgeBase = {
     ]
   },
   courtEtiquette: {
-    question: ["court etiquette", "how to behave in court", "court rules"],
+    question: ["court etiquette", "how to behave in court", "court rules", "courtroom behavior", "court dress code"],
     answer: [
       "Important court etiquette to follow:",
       "• Dress formally and conservatively",
@@ -88,6 +97,59 @@ export const legalKnowledgeBase = {
       "• Demonstrate respect for all court officials",
       "• Avoid emotional outbursts or inappropriate language",
       "• Follow your attorney's guidance"
+    ]
+  },
+  courtWise: {
+    question: ["about courtwise", "what is courtwise", "courtwise features", "how to use courtwise", "courtwise platform"],
+    answer: [
+      "CourtWise is a comprehensive court case management system with these features:",
+      "• User-friendly dashboard for cases and hearings",
+      "• Role-based access for clients, lawyers, clerks, and judges",
+      "• Secure document storage and sharing",
+      "• Calendar integration for hearing schedules",
+      "• Real-time notifications for case updates",
+      "• Messaging system for client-lawyer communication",
+      "• E-filing capabilities for court documents",
+      "• Case tracking and status updates"
+    ]
+  },
+  hearings: {
+    question: ["hearing schedule", "court dates", "scheduling hearings", "view hearings", "upcoming hearings"],
+    answer: [
+      "To manage your hearing schedule in CourtWise:",
+      "• View all hearings on the Schedule page",
+      "• Filter by day, week, or month view",
+      "• Click on a date to see detailed information",
+      "• Receive notifications before upcoming hearings",
+      "• Request rescheduling if needed (subject to approval)",
+      "• Add the hearing to your personal calendar",
+      "• Access hearing details including location and time"
+    ]
+  },
+  documents: {
+    question: ["document upload", "file documents", "submit evidence", "manage documents", "court documents"],
+    answer: [
+      "Managing documents in CourtWise is simple:",
+      "• Upload documents from the case details page",
+      "• Supported formats include PDF, DOC, DOCX, JPG, PNG",
+      "• Add descriptions and tags for better organization",
+      "• Control who can access each document",
+      "• Receive notifications when documents are reviewed",
+      "• Download or share documents securely",
+      "• Keep track of document submission deadlines"
+    ]
+  },
+  authentication: {
+    question: ["login problems", "cannot login", "reset password", "account issues", "forgot password"],
+    answer: [
+      "If you're having trouble accessing your account:",
+      "• Use the 'Forgot Password' link on the login page",
+      "• Check your email for verification messages",
+      "• Ensure you're using the correct email address",
+      "• Contact support if you need to update your email",
+      "• Make sure your account has been approved",
+      "• Try clearing your browser cache",
+      "• Use a supported browser (Chrome, Firefox, Safari, Edge)"
     ]
   }
 };

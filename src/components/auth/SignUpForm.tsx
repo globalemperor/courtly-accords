@@ -26,6 +26,25 @@ const baseSchemaFields = {
   phoneNumber: z.string().min(5, "Phone number is required"),
   idType: z.string().min(1, "ID type is required"),
   idNumber: z.string().min(1, "ID number is required"),
+  otherIdType: z.string().optional(),
+};
+
+// Function to get ID number validation based on ID type
+const getIdNumberValidation = (idType: string) => {
+  switch (idType) {
+    case "aadhar":
+      return z.string().regex(/^\d{12}$/, "Aadhar must be 12 digits");
+    case "passport":
+      return z.string().regex(/^[A-Z]\d{7}$/, "Passport must be 1 letter followed by 7 digits");
+    case "driving":
+      return z.string().regex(/^[A-Z]{2}-\d{2}-\d{4}-\d{7}$/, "Format: SS-RR-YYYY-NNNNNNN");
+    case "voter":
+      return z.string().regex(/^[A-Z]{3}\d{7}$/, "Voter ID must be 3 letters followed by 7 digits");
+    case "pan":
+      return z.string().regex(/^[A-Z]{3}[PCHABGFLJTE][A-Z]\d{4}[A-Z]$/, "Invalid PAN format");
+    default:
+      return z.string().min(1, "ID number is required");
+  }
 };
 
 // Base schema with the password validation
@@ -40,7 +59,7 @@ const clientSchema = baseSchema;
 
 const lawyerSchema = z.object({
   ...baseSchemaFields,
-  barId: z.string().min(3, "Bar ID is required"),
+  barId: z.string().regex(/^[A-Z]{2}\/\d{4}\/\d{5}$/, "Bar ID format: ST/YYYY/NNNNN (e.g., AP/2020/12345)"),
   yearsOfExperience: z.string().min(1, "Years of experience is required"),
   specialization: z.string().optional(),
 }).refine(data => data.password === data.confirmPassword, {
@@ -94,6 +113,7 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState<UserRole>(defaultRole);
   const [selectedCountry, setSelectedCountry] = useState<any>(null);
+  const [selectedIdType, setSelectedIdType] = useState<string>("");
   const { signup } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -109,6 +129,7 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
       phoneNumber: "",
       idType: "",
       idNumber: "",
+      otherIdType: "",
       barId: "",
       yearsOfExperience: "",
       specialization: "",
@@ -128,6 +149,12 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
 
   const handleCountryCodeChange = (value: string) => {
     form.setValue("countryCode", value);
+  };
+
+  const handleIdTypeChange = (value: string) => {
+    setSelectedIdType(value);
+    form.setValue("idType", value);
+    form.setValue("idNumber", ""); // Reset ID number when type changes
   };
 
   const formatPhoneNumber = (countryCode: string, phoneNumber: string) => {
@@ -340,7 +367,7 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
                   <FormItem>
                     <FormLabel>Government ID Type</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => handleIdTypeChange(value)}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -354,7 +381,6 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
                         <SelectItem value="driving">Driving License</SelectItem>
                         <SelectItem value="voter">Voter ID</SelectItem>
                         <SelectItem value="pan">PAN Card</SelectItem>
-                        <SelectItem value="national">National ID</SelectItem>
                         <SelectItem value="other">Other Government ID</SelectItem>
                       </SelectContent>
                     </Select>
@@ -363,19 +389,47 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="idNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ID Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter ID Number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+              <div>
+                {selectedIdType === "other" ? (
+                  <FormField
+                    control={form.control}
+                    name="otherIdType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Specify ID Type</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter ID Type" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <FormField
+                    control={form.control}
+                    name="idNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ID Number</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder={
+                              selectedIdType === "aadhar" ? "12 digits" :
+                              selectedIdType === "passport" ? "Letter followed by 7 digits" :
+                              selectedIdType === "driving" ? "SS-RR-YYYY-NNNNNNN" :
+                              selectedIdType === "voter" ? "3 letters followed by 7 digits" :
+                              selectedIdType === "pan" ? "AAAPL1234A format" :
+                              "Enter ID Number"
+                            } 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
+              </div>
             </div>
 
             {role === 'lawyer' && (
@@ -388,7 +442,7 @@ export const SignUpForm = ({ defaultRole = "client" }: SignUpFormProps) => {
                       <FormItem>
                         <FormLabel>Bar ID</FormLabel>
                         <FormControl>
-                          <Input placeholder="BAR12345" {...field} />
+                          <Input placeholder="ST/YYYY/NNNNN (e.g., AP/2020/12345)" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

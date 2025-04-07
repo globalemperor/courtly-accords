@@ -40,7 +40,15 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   
-  // Mock responses with bullet points
+  // Default greeting responses for general queries
+  const greetingResponses = [
+    "Hello! How can I assist you with CourtWise today?",
+    "Hi there! What can I help you with regarding court cases or legal processes?",
+    "Greetings! I'm your CourtWise assistant. What information do you need today?",
+    "Welcome to CourtWise support! How may I assist you with your legal queries?"
+  ];
+  
+  // More specific mock responses with bullet points for legal topics
   const mockResponses = [
     "I can help with that! Here's what you need to know:\n• Login with your credentials\n• Navigate to the Dashboard\n• Click on 'My Cases' to view your cases\n• Use filters to find specific cases",
     "Thanks for asking! Here's a quick guide:\n• Check the Schedule page for all hearings\n• Click on a date to see details\n• Set reminders for important dates\n• Sync with your personal calendar",
@@ -48,8 +56,19 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
     "About CourtWise access:\n• Different roles have different permissions\n• Clients can view their own cases\n• Lawyers manage multiple cases\n• Judges access their assigned dockets"
   ];
 
-  // Function to find the best response from knowledge base
+  // Check if input contains greeting patterns
+  const isGreeting = (input: string): boolean => {
+    const greetingPatterns = ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening'];
+    return greetingPatterns.some(pattern => input.toLowerCase().includes(pattern));
+  };
+
+  // Function to find the best response from knowledge base with improved matching
   const findBestResponse = (userQuery: string): string | null => {
+    // If it's a greeting, handle separately
+    if (isGreeting(userQuery)) {
+      return greetingResponses[Math.floor(Math.random() * greetingResponses.length)];
+    }
+    
     let bestMatch = null;
     let highestMatchScore = 0;
     
@@ -61,21 +80,23 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
         let matchScore = 0;
         
         keywords.forEach(keyword => {
-          if (normalizedQuery.includes(keyword)) {
-            matchScore++;
+          if (keyword.length > 3 && normalizedQuery.includes(keyword)) {
+            matchScore += 2;  // Give more weight to longer keywords
+          } else if (normalizedQuery.includes(keyword)) {
+            matchScore += 1;
           }
         });
         
         // If we have a better match than before
         if (matchScore > highestMatchScore) {
           highestMatchScore = matchScore;
-          bestMatch = topic.answer[0]; // Using the first answer in the array
+          bestMatch = topic.answer[Math.min(index, topic.answer.length - 1)]; // Use corresponding answer if available
         }
       });
     });
     
-    // Only return a match if it's somewhat relevant
-    return highestMatchScore > 1 ? bestMatch : null;
+    // Only return a match if it's somewhat relevant (higher threshold)
+    return highestMatchScore > 2 ? bestMatch : null;
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Tabs, 
   TabsList, 
@@ -7,7 +7,7 @@ import {
   TabsContent
 } from "@/components/ui/tabs";
 import { FlexibleCalendar } from "@/components/schedule/FlexibleCalendar";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { CalendarIcon, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,10 +22,22 @@ const Schedule = () => {
   // Format the selected date to display
   const formattedDate = format(selectedDate, "EEEE, MMMM d, yyyy");
 
+  // Get dates that have hearings
+  const datesWithHearings = hearings.reduce((dates, hearing) => {
+    const hearingDate = new Date(hearing.date);
+    const dateString = hearingDate.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    if (!dates.includes(dateString)) {
+      dates.push(dateString);
+    }
+    
+    return dates;
+  }, [] as string[]);
+
   // Get hearings for the selected date
   const todaysHearings = hearings.filter(hearing => {
     const hearingDate = new Date(hearing.date);
-    return hearingDate.toDateString() === selectedDate.toDateString();
+    return isSameDay(hearingDate, selectedDate);
   });
 
   const hasHearings = todaysHearings.length > 0;
@@ -58,7 +70,8 @@ const Schedule = () => {
       <FlexibleCalendar 
         viewMode={viewMode} 
         selectedDate={selectedDate} 
-        onDateSelect={setSelectedDate} 
+        onDateSelect={setSelectedDate}
+        highlightedDates={datesWithHearings}
       />
       
       {/* No hearings message */}
@@ -69,6 +82,43 @@ const Schedule = () => {
             No hearings or appointments scheduled for {formattedDate}.
           </AlertDescription>
         </Alert>
+      )}
+
+      {/* Show hearings for the selected date */}
+      {hasHearings && (
+        <div className="space-y-4">
+          <h2 className="text-xl font-medium">Hearings on {formattedDate}</h2>
+          {todaysHearings.map((hearing) => (
+            <Card key={hearing.id} className="overflow-hidden">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Time</p>
+                    <p className="font-medium">{hearing.time}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Location</p>
+                    <p className="font-medium">{hearing.location}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Status</p>
+                    <p className={`font-medium ${
+                      hearing.status === "scheduled" ? "text-green-600" : 
+                      hearing.status === "cancelled" ? "text-red-600" : 
+                      "text-amber-600"
+                    }`}>
+                      {hearing.status.charAt(0).toUpperCase() + hearing.status.slice(1)}
+                    </p>
+                  </div>
+                  <div className="md:col-span-3">
+                    <p className="text-sm text-muted-foreground">Description</p>
+                    <p>{hearing.description}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );
