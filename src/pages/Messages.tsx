@@ -26,13 +26,11 @@ const Messages = () => {
   const [searchText, setSearchText] = useState("");
   const [searchParams] = useSearchParams();
   
-  // Handle case parameter from URL
   const caseId = searchParams.get('case');
   const caseItem = caseId ? getCaseById(caseId) : null;
 
   useEffect(() => {
     if (caseItem && user) {
-      // If case is provided, try to select the corresponding user
       if (user.role === 'client' && caseItem.lawyerId) {
         setSelectedUser(caseItem.lawyerId);
       } else if ((user.role === 'lawyer' || user.role === 'judge' || user.role === 'clerk') && caseItem.clientId) {
@@ -43,17 +41,14 @@ const Messages = () => {
 
   if (!user) return null;
 
-  // Get list of users based on role and filter
   const getUsers = () => {
     const allUsers = [];
 
     if (user.role === 'client') {
-      // For clients, show only accepted lawyers
       const acceptedLawyers = getAcceptedLawyers(user.id);
       return acceptedLawyers;
     } 
     else if (user.role === 'lawyer') {
-      // For lawyers, get clients, other lawyers, and clerks
       if (filter === 'clients') {
         allUsers.push(...getUsersByRole('client'));
       } else if (filter === 'lawyers') {
@@ -67,7 +62,6 @@ const Messages = () => {
       }
     } 
     else if (user.role === 'clerk') {
-      // For clerks, get lawyers, other clerks, and judges
       if (filter === 'lawyers') {
         allUsers.push(...getUsersByRole('lawyer'));
       } else if (filter === 'clerks') {
@@ -81,7 +75,6 @@ const Messages = () => {
       }
     } 
     else if (user.role === 'judge') {
-      // For judges, get clerks and other judges
       if (filter === 'clerks') {
         allUsers.push(...getUsersByRole('clerk'));
       } else if (filter === 'judges') {
@@ -92,7 +85,6 @@ const Messages = () => {
       }
     }
 
-    // Apply search filter if provided
     if (searchText) {
       return allUsers.filter(u => u.name.toLowerCase().includes(searchText.toLowerCase()));
     }
@@ -100,12 +92,10 @@ const Messages = () => {
     return allUsers;
   };
 
-  // Helper function to get users by role
   const getUsersByRole = (role: 'client' | 'lawyer' | 'clerk' | 'judge') => {
     return Object.values(useData().users).filter(u => u.role === role);
   };
 
-  // Get all messages between current user and selected user
   const getMessagesWithUser = (userId: string) => {
     return messages.filter(
       m => (m.senderId === user?.id && m.recipientId === userId) ||
@@ -113,10 +103,8 @@ const Messages = () => {
     ).sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
   };
 
-  // Create filter tabs based on user role
   const getFilterTabs = () => {
     if (user.role === 'client') {
-      // Clients can only message lawyers, don't show filter tabs
       return null;
     }
     

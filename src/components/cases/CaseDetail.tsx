@@ -361,7 +361,7 @@ const HearingListItem = ({ hearing }: { hearing: Hearing }) => {
           <div className="flex items-center space-x-3 mt-2 text-sm">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
-              <span>{format(new Date(hearing.date), "MMMM d, yyyy")}</span>
+              {format(new Date(hearing.date), "MMMM d, yyyy")}
             </div>
             <div className="flex items-center">
               <Badge variant="outline">{hearing.time}</Badge>

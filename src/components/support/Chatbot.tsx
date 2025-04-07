@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,7 +39,8 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
-  const { getAcceptedLawyers, getAllLawyers } = useData();
+  // Remove references to unused functions
+  const { getAcceptedLawyers } = useData();
   
   // Check if input contains greeting patterns
   const isGreeting = (input: string): boolean => {
