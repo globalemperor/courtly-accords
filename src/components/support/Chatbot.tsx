@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/context/AuthContext";
+import { useData } from "@/context/DataContext";
 
 interface Message {
   id: string;
@@ -22,7 +23,7 @@ interface KnowledgeBase {
   };
 }
 
-interface ChatbotProps {
+export interface ChatbotProps {
   knowledgeBase: KnowledgeBase;
 }
 
@@ -39,23 +40,8 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const { getAcceptedLawyers, getAllLawyers } = useData();
   
-  // Default greeting responses for general queries
-  const greetingResponses = [
-    "Hello! How can I assist you with CourtWise today?",
-    "Hi there! What can I help you with regarding court cases or legal processes?",
-    "Greetings! I'm your CourtWise assistant. What information do you need today?",
-    "Welcome to CourtWise support! How may I assist you with your legal queries?"
-  ];
-  
-  // More specific mock responses with bullet points for legal topics
-  const mockResponses = [
-    "I can help with that! Here's what you need to know:\n• Login with your credentials\n• Navigate to the Dashboard\n• Click on 'My Cases' to view your cases\n• Use filters to find specific cases",
-    "Thanks for asking! Here's a quick guide:\n• Check the Schedule page for all hearings\n• Click on a date to see details\n• Set reminders for important dates\n• Sync with your personal calendar",
-    "Great question about filing cases:\n• Lawyers can file new cases\n• Required documents must be uploaded\n• Fill in all mandatory fields\n• Submit for court review",
-    "About CourtWise access:\n• Different roles have different permissions\n• Clients can view their own cases\n• Lawyers manage multiple cases\n• Judges access their assigned dockets"
-  ];
-
   // Check if input contains greeting patterns
   const isGreeting = (input: string): boolean => {
     const greetingPatterns = ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening'];
@@ -64,8 +50,9 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
 
   // Function to find the best response from knowledge base with improved matching
   const findBestResponse = (userQuery: string): string | null => {
-    // If it's a greeting, handle separately
+    // If it's a greeting, handle greeting specially
     if (isGreeting(userQuery)) {
+      const greetingResponses = knowledgeBase.greeting.answer;
       return greetingResponses[Math.floor(Math.random() * greetingResponses.length)];
     }
     
@@ -96,7 +83,7 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
     });
     
     // Only return a match if it's somewhat relevant (higher threshold)
-    return highestMatchScore > 2 ? bestMatch : null;
+    return highestMatchScore > 1 ? bestMatch : null;
   };
 
   useEffect(() => {
@@ -130,12 +117,12 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
       const botMessage: Message = {
         id: `bot-${Date.now()}`,
         sender: 'bot',
-        text: knowledgeResponse || mockResponses[Math.floor(Math.random() * mockResponses.length)],
+        text: knowledgeResponse || "I'm not sure how to help with that specific query. Could you rephrase or ask about court cases, legal procedures, or using our platform?",
         timestamp: new Date()
       };
       
       setMessages(prev => [...prev, botMessage]);
-    }, 1000);
+    }, 800);
   };
 
   const formatBotMessage = (text: string) => {
@@ -146,7 +133,7 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
             <div key={index} className={line.includes('•') ? 'flex items-start' : ''}>
               {line.includes('•') ? (
                 <>
-                  <span className="text-court-blue mr-1">{line.substring(0, 1)}</span>
+                  <span className="text-primary mr-2">{line.substring(0, 1)}</span>
                   <span>{line.substring(1)}</span>
                 </>
               ) : (
@@ -165,15 +152,15 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
       {/* Chat button */}
       <div 
         onClick={() => setIsOpen(true)} 
-        className={`fixed bottom-5 right-5 bg-court-blue p-3 rounded-full shadow-lg cursor-pointer transition-all hover:bg-court-blue-dark ${isOpen ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100'}`}
+        className={`fixed bottom-5 right-5 bg-primary p-3 rounded-full shadow-lg cursor-pointer transition-all hover:bg-primary/90 ${isOpen ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100'}`}
       >
         <MessageSquare className="h-6 w-6 text-white" />
       </div>
 
       {/* Chat window */}
       <div className={`fixed bottom-5 right-5 w-[350px] max-w-[95vw] transition-all duration-300 z-50 ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
-        <Card className="shadow-xl border-court-gray overflow-hidden">
-          <CardHeader className="bg-court-blue text-white p-4 flex flex-row justify-between items-center">
+        <Card className="shadow-xl border-gray-200 overflow-hidden">
+          <CardHeader className="bg-primary text-white p-4 flex flex-row justify-between items-center">
             <div className="flex items-center space-x-2">
               <Avatar className="h-8 w-8 border-2 border-white">
                 <AvatarImage src="/favicon.ico" />
@@ -185,7 +172,7 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
               variant="ghost" 
               size="icon"
               onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-court-blue-dark"
+              className="text-white hover:bg-primary/90"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -201,7 +188,7 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
                   <div 
                     className={`max-w-[80%] rounded-lg p-3 ${
                       message.sender === 'user' 
-                        ? 'bg-court-blue text-white rounded-tr-none' 
+                        ? 'bg-primary text-white rounded-tr-none' 
                         : 'bg-gray-100 rounded-tl-none'
                     }`}
                   >
@@ -224,7 +211,7 @@ export const Chatbot = ({ knowledgeBase }: ChatbotProps) => {
                 placeholder="Type your message..."
                 className="flex-1"
               />
-              <Button type="submit" size="icon" className="bg-court-blue hover:bg-court-blue-dark">
+              <Button type="submit" size="icon" className="bg-primary hover:bg-primary/90">
                 <Send className="h-4 w-4" />
               </Button>
             </form>
